@@ -1,0 +1,29 @@
+{
+ "name": "Singularity New CCG",
+ "short_name": "Singularity CCG",
+ "description": "Math Match card game on the Singularity News channel",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "fullscreen",
+ "display_override": [
+  "fullscreen",
+  "standalone"
+ ],
+ "orientation": "landscape",
+ "background_color": "#05070d",
+ "theme_color": "#05070d",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any maskable"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
