@@ -86,6 +86,8 @@ body.shk #desk{animation:shk .5s 5}@keyframes shk{0%,100%{translate:0 0}20%{tran
 body.m7 .seat{display:none!important}body.m7 #sb{font-size:.8rem;top:7vh}#sb .r.out{opacity:.35;text-decoration:line-through}
 .cvt{position:fixed;left:50%;top:30%;transform:translateX(-50%);z-index:9;padding:10px 18px;border-radius:10px;color:#fff;font:14px/1.3 system-ui,sans-serif;text-align:center;box-shadow:0 0 2rem #000c;pointer-events:none;animation:cvt 2.6s forwards}.cvt b{display:block;font-size:20px;letter-spacing:.14em}.cvt.z{background:#4a3f58f0}.cvt.r{background:#b22a1ef0}@keyframes cvt{0%{opacity:0;transform:translate(-50%,20px) scale(.7)}12%{opacity:1;transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0}}
 .c.inv .ci{filter:invert(1) hue-rotate(180deg)}body.m7 #sb .r span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:8.5rem}
+#bg{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:filter 2s}body.post #bg{filter:hue-rotate(150deg) saturate(1.25) brightness(.85)}
+#pan{background:radial-gradient(ellipse at 50% 45%,#16274a,#081022 75%)!important;border-color:#2f8fe0!important;box-shadow:inset 0 0 8rem #000c,0 0 3rem #2f8fe0aa,0 0 6rem #0008!important}body.post #pan{background:radial-gradient(ellipse,#3a1010,#120404 75%)!important;border-color:#e0402f!important;box-shadow:inset 0 0 8rem #000c,0 0 3rem #e0402faa!important}
 #ban{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#000d;z-index:9;color:var(--bad);font:bold 8vw/1 Georgia,serif;letter-spacing:.1em;text-align:center;animation:bn 3.4s forwards;pointer-events:none}
 #ban small{font-size:2.6vw;color:var(--fg);letter-spacing:.05em;margin-top:2vw}@keyframes bn{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0}}
 #end{position:fixed;inset:0;background:#000c;z-index:9;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:26px}
@@ -121,6 +123,7 @@ body.m7 .seat{display:none!important}body.m7 #sb{font-size:.8rem;top:7vh}#sb .r.
 .gc .us{position:absolute;left:0;right:0;top:46%;background:#c22d;color:#fff;font:bold 10px/16px sans-serif;text-align:center;text-decoration:none;letter-spacing:.08em;transform:rotate(-8deg)}.gc:has(.us) img{filter:grayscale(.8) brightness(.9)}
 #tst{display:none;position:fixed;z-index:16;left:10px;bottom:10px;gap:6px;flex-wrap:wrap;max-width:60vw}#tst button{font-size:11px;padding:4px 8px;background:#1b2a44;color:#9fb4d8}
 </style></head><body>
+<div id="bg"></div>
 <div id="desk"><div id="pan"></div><div class="half" id="hq"></div><div class="half" id="hp"></div><div class="seat" id="st0"><span>YOU</span></div><div class="seat" id="st1"><span>WEST</span></div><div class="seat" id="st2"><span>NORTH</span></div><div class="seat" id="st3"><span>EAST</span></div></div>
 <div id="top"><h1><span>Singularity New CCG</span><span class="bt"><button id="au">Auto: off</button><button id="cb">Cards</button><button id="rl">Rules</button><button id="fs" title="Full screen">⛶</button><button id="nw">New game</button></span></h1>
 <div class="meter"><i id="mi"></i><span id="ml"></span></div>
@@ -520,7 +523,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.10.31.015';$('ver').textContent='v'+VER;
+const VER='26.10.31.016';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
@@ -531,4 +534,43 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){const had=
  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(reg=>{const chk=()=>reg.update().catch(()=>{});setInterval(chk,15*60*1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})}).catch(()=>{}))}
 $('etb').onclick=()=>{if(G.wait&&G.more)G.wait(null)};$('nw').onclick=showMap;$('news').onclick=e=>{if(e.target.tagName=='IMG')$('news').classList.toggle('min')};$('lg').onclick=e=>{const c=e.target.closest('.lc');if(c)writeStory(+c.dataset.i)};$('e1').onclick=()=>playNode(CUR);$('e2').onclick=showMap;$('map').onclick=e=>{const g=e.target.closest('.nd');if(g)playNode(+g.dataset.i);else if(e.target.closest('.rs')){resetAll()}};loadNews();showMap();addEventListener('resize',()=>{if($('map').style.display!=='none')showMap()});
 $('au').onclick=()=>{AUTO=!AUTO;$('au').classList.toggle('on',AUTO);$('au').textContent='Auto: '+(AUTO?'on':'off');if(G&&!G.over){if(AUTO&&G.mode==4&&G.wait&&G.opts)G.wait(aiPick(G.trick.length?G.trick[G.trick.length-1]:null,G.opts));render()}};
+
+function buildBG(){let sd=1764;const R=()=>(sd=(sd*16807)%2147483647)/2147483647,W=1600,H=900,HZ=380;let o='';
+ const tower=(x,w,h,base,fill,edge,win,op)=>{let t=`<rect x="${x}" y="${base-h}" width="${w}" height="${h}" fill="${fill}"/>`;
+  if(R()<.45)t+=`<path d="M${x} ${base-h}L${x+w/2} ${base-h-w*.7}L${x+w} ${base-h}Z" fill="${fill}"/>`;
+  if(R()<.35)t+=`<line x1="${x+w/2}" y1="${base-h}" x2="${x+w/2}" y2="${base-h-40-R()*60}" stroke="${edge}" stroke-width="1.5" opacity=".8"/>`;
+  if(edge&&R()<.6)t+=`<line x1="${x+(R()<.5?1:w-1)}" y1="${base-h}" x2="${x+(R()<.5?1:w-1)}" y2="${base}" stroke="${edge}" stroke-width="2" opacity="${op}" filter="url(#gl)"/>`;
+  for(let yy=base-h+10;yy<base-6;yy+=11)for(let xx=x+4;xx<x+w-5;xx+=8)if(R()<win)t+=`<rect x="${xx}" y="${yy}" width="4" height="5" fill="${R()<.7?'#7fd8ff':R()<.5?'#ff5fd2':'#ffd27a'}" opacity="${.35+R()*.55}"/>`;return t};
+ o+=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050a24"/><stop offset=".55" stop-color="#14306a"/><stop offset="1" stop-color="#2a5aa8"/></linearGradient>
+ <linearGradient id="room" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1430"/><stop offset="1" stop-color="#03060f"/></linearGradient>
+ <radialGradient id="moon"><stop offset="0" stop-color="#cfe6ff"/><stop offset=".7" stop-color="#7fa8e8"/><stop offset="1" stop-color="#7fa8e8" stop-opacity="0"/></radialGradient>
+ <filter id="gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+ o+=`<rect width="${W}" height="${HZ}" fill="url(#sky)"/>`;
+ for(let i=0;i<70;i++)o+=`<circle cx="${R()*W}" cy="${R()*HZ*.55}" r="${R()*1.3+.3}" fill="#fff" opacity="${.3+R()*.6}"/>`;
+ o+=`<circle cx="1180" cy="95" r="60" fill="url(#moon)" opacity=".9"/><circle cx="1180" cy="95" r="38" fill="#d8ecff" opacity=".85"/>`;
+ // far skyline
+ for(let x=0;x<W;){const w=18+R()*34,h=70+R()*150;o+=tower(x,w,h,HZ,'#132a58','',.06,0);x+=w+R()*6}
+ // mid skyline
+ for(let x=-10;x<W;){const w=30+R()*60,h=100+R()*(Math.abs(x-W/2)<300?220:150);o+=tower(x,w,h,HZ,'#0b1a3c',R()<.5?'#3fd0ff':'#ff4fc4',.14,.7);x+=w+8+R()*24}
+ // halo ring and skyway
+ o+=`<ellipse cx="800" cy="230" rx="300" ry="30" fill="none" stroke="#5fe3ff" stroke-width="5" opacity=".75" filter="url(#gl)"/><ellipse cx="800" cy="230" rx="300" ry="30" fill="none" stroke="#e8fbff" stroke-width="1.5" opacity=".8"/>`;
+ o+=`<path d="M0 330 Q800 295 1600 330" fill="none" stroke="#3fd0ff" stroke-width="3" opacity=".55" filter="url(#gl)"/>`;
+ // near towers
+ for(let x=-20;x<W;){const w=60+R()*80,h=140+R()*170;if(Math.abs(x+w/2-W/2)>360)o+=tower(x,w,h,HZ+10,'#060f26','#2fb8ff',.18,.9);x+=w+40+R()*120}
+ // saucers
+ [[360,150,1],[980,90,.8],[1320,220,.7],[620,200,.6]].forEach(([x,y,s],k)=>{o+=`<g opacity=".9"><g transform="translate(${x} ${y}) scale(${s})"><animateTransform attributeName="transform" type="translate" additive="sum" values="0 0;${40-k*25} ${k%2?6:-6};0 0" dur="${9+k*3}s" repeatCount="indefinite"/><ellipse rx="30" ry="7" fill="#1b2f5c" stroke="#7fd8ff" stroke-width="1.5"/><ellipse cy="-5" rx="12" ry="7" fill="#2f4f8f"/><circle cx="-18" cy="1" r="2" fill="#ff5fd2"/><circle cx="0" cy="2" r="2" fill="#7fd8ff"/><circle cx="18" cy="1" r="2" fill="#ffd27a"/></g></g>`});
+ // room: floor, window frame, sill glow
+ o+=`<rect y="${HZ}" width="${W}" height="${H-HZ}" fill="url(#room)"/><line x1="0" y1="${HZ+2}" x2="${W}" y2="${HZ+2}" stroke="#3fd0ff" stroke-width="3" opacity=".6" filter="url(#gl)"/>`;
+ o+=`<path d="M0 0H${W}V40Q800 10 0 40Z" fill="#050a18"/><path d="M0 40Q800 10 ${W} 40" fill="none" stroke="#2f7fd8" stroke-width="3" opacity=".7" filter="url(#gl)"/>`;
+ o+=`<path d="M0 0L170 0L120 ${HZ}L0 ${HZ}Z" fill="#050a18"/><path d="M170 0L120 ${HZ}" stroke="#2f7fd8" stroke-width="4" opacity=".8" filter="url(#gl)"/><path d="M${W} 0L${W-170} 0L${W-120} ${HZ}L${W} ${HZ}Z" fill="#050a18"/><path d="M${W-170} 0L${W-120} ${HZ}" stroke="#2f7fd8" stroke-width="4" opacity=".8" filter="url(#gl)"/>`;
+ o+=`<path d="M560 40L520 ${HZ}M1040 40L1080 ${HZ}" stroke="#0a1630" stroke-width="10"/><path d="M560 40L520 ${HZ}M1040 40L1080 ${HZ}" stroke="#2f7fd8" stroke-width="1.5" opacity=".5"/>`;
+ // plants
+ const plant=(cx,by,s,fl)=>{let p=`<g transform="translate(${cx} ${by}) scale(${fl*s} ${s})">`;for(let i=0;i<9;i++){const a=-1.4+i*.35,l=120+R()*70,x2=Math.sin(a)*l,y2=-Math.cos(a)*l;p+=`<path d="M0 0Q${x2*.3} ${y2*.6} ${x2} ${y2}Q${x2*.6+12} ${y2*.5} 0 0Z" fill="#071a1c" stroke="#123c3a" stroke-width="2"/>`}return p+`<rect x="-26" y="0" width="52" height="40" rx="6" fill="#0a1530" stroke="#2f7fd8" stroke-width="2"/></g>`};
+ o+=plant(70,HZ+190,1.2,1)+plant(1530,HZ+150,1,-1);
+ // chair
+ o+=`<g transform="translate(0 ${HZ-430})"><path d="M150 700V600Q150 560 190 560H300Q330 560 330 600V700Z" fill="#0a1734" stroke="#1f4f9a" stroke-width="3"/><rect x="130" y="640" width="220" height="60" rx="14" fill="#0d1d40" stroke="#1f4f9a" stroke-width="3"/></g>`;
+ // news screen
+ o+=`<g transform="translate(1340 ${HZ-200}) skewY(-6)"><rect width="200" height="150" rx="10" fill="#071530" stroke="#3fa8ff" stroke-width="3" filter="url(#gl)"/><text x="18" y="38" font-family="system-ui,sans-serif" font-weight="bold" font-size="18" fill="#9fdcff">SINGULARITY</text><text x="18" y="60" font-family="system-ui,sans-serif" font-weight="bold" font-size="18" fill="#9fdcff">NEWS</text>${['APPS','AI','PEOPLE','MARKETS','BEYOND'].map((t,i)=>`<text x="18" y="${82+i*13}" font-family="system-ui,sans-serif" font-size="10" fill="#5f9fd8">${t}</text>`).join('')}<circle cx="155" cy="60" r="24" fill="none" stroke="#9fdcff" stroke-width="2"/><ellipse cx="155" cy="60" rx="10" ry="24" fill="none" stroke="#9fdcff" stroke-width="1.5"/><line x1="131" y1="60" x2="179" y2="60" stroke="#9fdcff" stroke-width="1.5"/></g>`;
+ return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin slice" width="100%" height="100%">${o}</svg>`}
+document.getElementById('bg').innerHTML=buildBG();
 </script></body></html>
