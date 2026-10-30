@@ -1,4 +1,4 @@
-const VER='26.10.31.011',C='singularity-ccg-'+VER,A=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
+const VER='26.10.31.012',C='singularity-ccg-'+VER,A=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 // Network-first for the page itself (always the latest version when online), cache-first for static assets, never touch /api/.

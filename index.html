@@ -241,7 +241,7 @@ async function oppMove(){const {pl,qu}=G;G.sel=null;G.busy=true;G.turn='q';rende
 async function timeout(){if(G.mode==4){if(G.wait)G.wait(null);return}if(G.busy||G.over)return;log('Time is up – '+OPP()+' moves!');await oppMove()}
 const ZONES=()=>G.mode==4?[...G.players.map(p=>p.hand),G.deck,G.drop,G.trick]:[G.pl,G.qu].flatMap(p=>[p.deck,p.hand,p.drop]);
 const NEWC={};let CFG={pl:24,qu:30,t:40},DONE=[],CUR=-1;
-const NODES=[{n:'Startup Alley',t:'q',pl:10,qu:12,x:14.0,y:66},{n:'Coffee Row',t:'q',pl:12,qu:16,x:26.2,y:40},{n:'Co-working Plaza',t:'4',tot:16,x:38.4,y:68},{n:'Slop Studio',t:'q',pl:16,qu:20,x:50.6,y:34},{n:'Data Docks',t:'4',tot:18,x:62.8,y:64},{n:'Venture Tower',t:'q',pl:20,qu:26,x:75.0,y:32},{n:'Bunker Market',t:'7',tot:32,x:87.2,y:62},{n:'Ash Boulevard',t:'q',pl:22,qu:28,x:99.4,y:36,post:1},{n:'Signal Ruins',t:'4',tot:26,x:111.6,y:66,post:1},{n:'Mirror Market',t:'q',pl:24,qu:30,x:123.8,y:34,post:1},{n:'Last Newsroom',t:'7',tot:32,x:136.0,y:60,post:1}];
+const NODES=[{n:'Startup Alley',t:'q',pl:10,qu:12,x:14.0,y:66},{n:'Coffee Row',t:'q',pl:12,qu:16,x:26.2,y:40},{n:'Co-working Plaza',t:'4',tot:21,x:38.4,y:68},{n:'Slop Studio',t:'q',pl:16,qu:20,x:50.6,y:34},{n:'Data Docks',t:'4',tot:27,x:62.8,y:64},{n:'Venture Tower',t:'q',pl:20,qu:26,x:75.0,y:32},{n:'Bunker Market',t:'7',tot:37,x:87.2,y:62},{n:'Ash Boulevard',t:'q',pl:22,qu:28,x:99.4,y:36,post:1},{n:'Signal Ruins',t:'4',tot:42,x:111.6,y:66,post:1},{n:'Mirror Market',t:'q',pl:24,qu:30,x:123.8,y:34,post:1},{n:'Last Newsroom',t:'7',tot:51,x:136.0,y:60,post:1}];
 try{DONE=JSON.parse(localStorage.getItem('sccg-done')||'[]')}catch(e){}
 const saveDone=()=>{try{localStorage.setItem('sccg-done',JSON.stringify(DONE))}catch(e){}};
 const unlocked=i=>i==0||!!DONE[i-1];
@@ -512,7 +512,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.10.31.011';$('ver').textContent='v'+VER;
+const VER='26.10.31.012';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
