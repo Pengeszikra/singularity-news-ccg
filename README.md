@@ -18,3 +18,24 @@ Open it from any static host (GitHub Pages, Vercel) and use "Add to Home Screen"
 - Math Match rules from [flogon-galaxy](https://github.com/Pengeszikra/flogon-galaxy), singularity meter, news ticker, layoffs, 7 s turn timer after the singularity
 - 42 rule: exactly $42M wins instantly
 - Poker chip stacks show the money on the table, Auto button plays for you
+
+## Online AI (optional)
+
+The game runs fully without AI (built-in headlines and texts). When the page is hosted with the serverless function in `api/ai.js` (Vercel), it adds:
+
+- **Mr. Slop headlines**: one batched call per ~6 h (cached on the server and in the browser), 3 headlines per singularity stage
+- **Card interviews**: a short Q&A with any collected character (button in the card view, cached per card)
+- **Final district**: starts already after the singularity, and the ending report is written by the AI
+
+The API key stays on the server. Set these environment variables in Vercel:
+
+| Variable | Meaning |
+| --- | --- |
+| `AI_API_KEY` | key of an OpenAI-compatible chat-completions endpoint |
+| `AI_BASE_URL` | e.g. `https://<provider>/v1` (the function calls `<base>/chat/completions`) |
+| `AI_MODEL` | model id, ideally an open-weight model |
+| `AI_DAILY_CAP` | optional, upstream calls per day (default 300) |
+| `AI_PER_IP_HOUR` | optional, calls per IP per hour (default 24) |
+| `ALLOWED_ORIGIN` | optional CORS origin (default `*`) |
+
+If the function is missing or errors, the game silently falls back to the built-in texts.
