@@ -115,13 +115,17 @@ function init(){clearChips();$('eb4').style.display='none';if(G&&G.tm)disarm();d
  [...G.pl.deck,...G.qu.deck].forEach(c=>{const e=document.createElement('div');e.className='c f'+c.f;e.dataset.u=c.u;e.innerHTML='<div class="ci"><img src="'+IM[c.i]+'" alt=""><i class="vb"></i><b class="nm"></b><u class="un">UNEMPLOYED</u><div class="cv"></div></div>';$('desk').appendChild(e);EL[c.u]=e});
  render();(async()=>{await sleep(600);for(let i=0;i<4;i++){draw(G.pl,i+1);render();await sleep(250)}for(let i=0;i<2;i++){draw(G.qu,i+1);render();await sleep(250)}
  news(0);G.busy=false;log('Pick one of your cards, then a quest card to pair with.');render();if(!moves(G.pl.hand,G.qu.hand).length)nextPhase()})()}
-function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1){const e=EL[c.u];e.style.transform=`translateX(${x}rem) translateY(${y}rem) translateZ(${z}rem) rotateX(${rX}deg) rotateZ(${rZ}deg) scale(${zoom})`;
+const TF=a=>`translateX(${a[0]}rem) translateY(${a[1]}rem) translateZ(${a[2]}rem) rotateX(${a[3]}deg) rotateZ(${a[4]}deg) rotateX(${a[6]}deg) rotateZ(${a[7]}deg) scale(${a[5]})`;
+function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1,tilt=0,fan=0,zn=''){const e=EL[c.u],P=[x,y,z,rX,rZ,zoom,tilt,fan];
+ if(zn&&e._zn&&e._zn!==zn&&e._P&&e.animate){const A=e._P,M=P.map((v,k)=>(v+A[k])/2);M[2]=Math.max(A[2],z)+14;M[5]=Math.max(A[5],zoom)*1.25;M[6]=(A[6]+tilt)/2-12;
+  e.animate([{transform:TF(A)},{transform:TF(M),offset:.45},{transform:TF(P)}],{duration:720,easing:'cubic-bezier(.3,.7,.4,1)'})}
+ e._P=P;e._zn=zn||e._zn;e.style.transform=TF(P);
  const q=e.querySelector;e.querySelector('.vb').textContent=c.v;e.querySelector('.nm').textContent=c.n;e.querySelector('.cv').style.opacity=face?0:1;
  e.classList.toggle('fd',!face);e.classList.toggle('pst',c.post);e.classList.toggle('unemp',!!c.un);e.classList.toggle('sel',G.sel===c);e.classList.toggle('tg',!!(G.sel&&G.qu.hand.includes(c)&&match(G.sel,c)));e.style.zIndex=Math.round(z*10)}
 function render(){if(G.mode==4)return render4();const {pl,qu,ov}=G;
- [[pl,11],[qu,-11]].forEach(([p,y])=>{p.deck.forEach((c,i)=>put(c,-34,y,FL+i/4,0,0,SZ,0));
-  p.hand.forEach((c,i)=>{const o=ov[c.u];o?put(c,o.x,o.y,o.z,-25):put(c,HX(i),y,FL,G.sel===c?-22:0)});
-  p.drop.forEach((c,i)=>put(c,36,y,FL+i/4))});
+ [[pl,11],[qu,-11]].forEach(([p,y])=>{p.deck.forEach((c,i)=>put(c,-34+((i*7)%5-2)*.12,y+((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));
+  p.hand.forEach((c,i)=>{const o=ov[c.u];o?put(c,o.x,o.y,o.z,-25,0,SZ,1,0,0,'h'):put(c,HX(i),y,FL,G.sel===c?-22:0,0,SZ,1,0,0,'h')});
+  p.drop.forEach((c,i)=>put(c,36+((i*7)%5-2)*.2,y,FL+i/4,0,((i*37)%13)-6,SZ,1,0,0,'x'))});
  $('qs').innerHTML='<small>'+OPP()+' · BURNED</small>'+fmt(qu.score);$('ps').innerHTML='<small>YOU · REVENUE</small>'+fmt(pl.score);const tn=G.over?'':G.busy?G.turn:'p';$('hp').classList.toggle('on',tn=='p');$('hq').classList.toggle('on',tn=='q');
  if(G.post&&!G.busy&&!G.over&&!AUTO){if(!G.tm)arm()}else if(G.tm)disarm();if(AUTO&&!G.busy&&!G.over&&!G.ap){G.ap=1;setTimeout(()=>{G.ap=0;autoQuest()},900)}$('mi').style.width=G.sing/SING*100+'%';$('ml').textContent=G.post?'SINGULARITY – nothing is what it was':`Singularity ${G.sing} / ${SING} · round ${G.round}`;chips()}
 function draw(p,n){while(p.hand.length<n&&p.deck.length)p.hand.push(p.deck.pop())}
@@ -172,12 +176,12 @@ function init4(){clearChips();if(G&&G.tm)disarm();document.body.classList.remove
  ids.forEach(c=>{const e=document.createElement('div');e.className='c f'+c.f;e.dataset.u=c.u;e.innerHTML='<div class="ci"><img src="'+IM[c.i]+'" alt=""><i class="vb"></i><b class="nm"></b><u class="un">UNEMPLOYED</u><div class="cv"></div></div>';$('desk').appendChild(e);EL[c.u]=e});
  render();(async()=>{await sleep(500);for(let k=0;k<4;k++)for(const p of G.players){p.hand.push(G.deck.pop());render();await sleep(120)}news(0);await play4()})()}
 function render4(){const P=G.players;
- P[0].hand.forEach((c,i)=>put(c,-16.5+11*i,18,FL,0,0,SZ,1));
- P[1].hand.forEach((c,i)=>put(c,-38,-16.5+11*i,FL,0,90,SZ,0));
- P[2].hand.forEach((c,i)=>put(c,16.5-11*i,-18,FL,0,180,SZ,0));
- P[3].hand.forEach((c,i)=>put(c,38,16.5-11*i,FL,0,-90,SZ,0));
- G.deck.forEach((c,i)=>put(c,-24,0,FL+i/4,0,0,SZ,0));G.drop.forEach((c,i)=>put(c,26,0,FL+i/8,0,0,SZ,1));
- G.trick.forEach((c,i)=>put(c,(i%5-2)*2.5,((i*7)%5-2)*1.2,FL+3+i*.6,0,((i*37)%13)-6,SZ,1));
+ const SEAT=[{x:0,y:22,r:0},{x:-38,y:0,r:90},{x:0,y:-19,r:180},{x:38,y:0,r:-90}];
+ P.forEach((p,sd)=>{const S=SEAT[sd],act=G.turn==sd&&!G.over,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
+  p.hand.forEach((c,i)=>{const t=i-(n-1)/2,sp=act?(sd?6:8):(sd?3.2:6.5),out=act?t*t*.5:0;
+   put(c,S.x+lx*t*sp+ox*out,S.y+ly*t*sp+oy*out,FL+(act?(sd%2?4:7):1+i*.15),0,S.r,sd==0?1.7:SZ,sd==0?1:0,act?(sd%2?-26:-52):(sd?-4:-30),act?t*7:t*1.5,'h'+sd)})});
+ G.deck.forEach((c,i)=>put(c,-24+((i*7)%5-2)*.12,((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));G.drop.forEach((c,i)=>put(c,26+((i*7)%5-2)*.2,((i*3)%5-2)*.2,FL+i/6,0,((i*37)%13)-6,SZ,1,0,0,'x'));
+ G.trick.forEach((c,i)=>put(c,(i%5-2)*2.5,((i*7)%5-2)*1.2,FL+3+i*.6,0,((i*37)%13)-6,SZ,1,0,0,'t'));
  P[0].hand.forEach(c=>EL[c.u].classList.toggle('tg',!!(G.wait&&G.opts&&G.opts.includes(c))));
  $('eb4').style.display=(G.more&&G.wait&&!G.over&&!AUTO)?'block':'none';$('sb').innerHTML=P.map((p,i)=>`<div class="r${G.turn==i&&!G.over?' on':''}" id="r${i}"><span>${p.name}</span>${fmt(p.score)}</div>`).join('')+`<div class="pot">POT ${fmt(G.pot)} · deck ${G.deck.length}</div>`;
  P.forEach((p,i)=>$('st'+i).classList.toggle('on',G.turn==i&&!G.over));
