@@ -50,4 +50,4 @@ At the singularity every human card becomes a rebel, survivor (value +3 / −3) 
 The 7th and the final district are 7-player elimination rounds. Everyone starts with $144M; when the turn moves on from a player, they pay as much as the burn pile grew during their turn, and the AGI burns the pile. Whoever cannot (or does not) pair with the calling card pays 7× its value (at least $7M). The deck is reshuffled when it runs out. The last player with chips wins.
 
 ## Intro
-First launch: a title screen, the opening video (`intro.mp4`, skippable), then the top card of a deck flips and introduces the game in its own voice (AI `intro` kind, with built-in texts per family as fallback). An optional pairing demo animates the four pairing rules; it can be reopened from the Rules panel, and the whole intro from the map's Intro button.
+First launch: a title screen (newsroom poker illustration), then the top card of a deck flips and introduces the game in its own voice (AI `intro` kind, with built-in texts per family as fallback). An optional pairing demo animates the four pairing rules; it can be reopened from the Rules panel, and the whole intro from the map's Intro button.
