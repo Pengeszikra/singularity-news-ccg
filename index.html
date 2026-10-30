@@ -117,7 +117,7 @@ function init(){clearChips();$('eb4').style.display='none';if(G&&G.tm)disarm();d
  news(0);G.busy=false;log('Pick one of your cards, then a quest card to pair with.');render();if(!moves(G.pl.hand,G.qu.hand).length)nextPhase()})()}
 const TF=a=>`translateX(${a[0]}rem) translateY(${a[1]}rem) translateZ(${a[2]}rem) rotateX(${a[3]}deg) rotateZ(${a[4]}deg) rotateX(${a[6]}deg) rotateZ(${a[7]}deg) scale(${a[5]})`;
 function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1,tilt=0,fan=0,zn=''){const e=EL[c.u],P=[x,y,z,rX,rZ,zoom,tilt,fan];
- if(zn&&e._zn&&e._zn!==zn&&e._P&&e.animate){const A=e._P,M=P.map((v,k)=>(v+A[k])/2);M[2]=Math.max(A[2],z)+14;M[5]=Math.max(A[5],zoom)*1.25;M[6]=(A[6]+tilt)/2-12;
+ if(zn&&e._zn&&e._zn!==zn&&e._P&&e.animate){const A=e._P,M=P.map((v,k)=>(v+A[k])/2);M[2]=Math.max(A[2],z)+5;M[5]=Math.max(A[5],zoom)*1.1;M[6]=(A[6]+tilt)/2-3;
   e.animate([{transform:TF(A)},{transform:TF(M),offset:.45},{transform:TF(P)}],{duration:720,easing:'cubic-bezier(.3,.7,.4,1)'})}
  e._P=P;e._zn=zn||e._zn;e.style.transform=TF(P);
  const q=e.querySelector;e.querySelector('.vb').textContent=c.v;e.querySelector('.nm').textContent=c.n;e.querySelector('.cv').style.opacity=face?0:1;
@@ -171,15 +171,15 @@ function endScreen(w){let rw='';if(w&&CUR>=0){const first=!DONE[CUR];DONE[CUR]=1
 const fx=(a,b,r)=>{const x=a.v,y=b.v,k={POSITIVE:`${x} + ${y}`,NEGATIVE:`|${x}| + |${y}|`,ZERO:`|${x} + ${y}| × 3`,INVERZIT:`|${x}| × 4`}[r.k];return G.post?`(${k}) × 2`:k};
 function init4(){clearChips();if(G&&G.tm)disarm();document.body.classList.remove('post');document.body.classList.add('m4');$('end').style.display='none';document.querySelectorAll('.c').forEach(e=>e.remove());
  const ids=shuf([...CARDS.keys()]).slice(0,CFG.t).map(i=>mk(CARDS[i]));
- G={mode:4,players:['YOU','WEST','NORTH','EAST'].map(n=>({name:n,hand:[],score:0})),deck:ids,drop:[],trick:[],pot:0,leader:Math.random()*4|0,turn:0,sing:0,stage:0,round:1,post:false,sel:null,busy:true,over:false,ov:{}};
+ G={mode:4,players:['YOU','WEST','NORTH','EAST'].map(n=>({name:n,hand:[],score:0})),deck:ids,drop:[],trick:[],pot:0,leader:Math.random()*4|0,turn:0,sing:0,stage:0,round:1,post:false,sel:null,busy:true,dealing:true,over:false,ov:{}};
  G.pl=G.players[0];G.qu={hand:[],deck:[],drop:[],score:0};
  ids.forEach(c=>{const e=document.createElement('div');e.className='c f'+c.f;e.dataset.u=c.u;e.innerHTML='<div class="ci"><img src="'+IM[c.i]+'" alt=""><i class="vb"></i><b class="nm"></b><u class="un">UNEMPLOYED</u><div class="cv"></div></div>';$('desk').appendChild(e);EL[c.u]=e});
- render();(async()=>{await sleep(500);for(let k=0;k<4;k++)for(const p of G.players){p.hand.push(G.deck.pop());render();await sleep(120)}news(0);await play4()})()}
+ render();(async()=>{await sleep(500);for(let k=0;k<4;k++)for(const p of G.players){p.hand.push(G.deck.pop());render();await sleep(120)}await sleep(500);G.dealing=false;render();news(0);await play4()})()}
 function render4(){const P=G.players;
  const SEAT=[{x:0,y:22,r:0},{x:-38,y:0,r:90},{x:0,y:-19,r:180},{x:38,y:0,r:-90}];
- P.forEach((p,sd)=>{const S=SEAT[sd],act=G.turn==sd&&!G.over,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
-  p.hand.forEach((c,i)=>{const t=i-(n-1)/2,sp=act?(sd?6:8):(sd?3.2:6.5),out=act?t*t*.5:0;
-   put(c,S.x+lx*t*sp+ox*out,S.y+ly*t*sp+oy*out,FL+(act?(sd%2?4:7):1+i*.15),0,S.r,sd==0?1.7:SZ,sd==0?1:0,act?(sd%2?-26:-52):(sd?-4:-30),act?t*7:t*1.5,'h'+sd)})});
+ P.forEach((p,sd)=>{const S=SEAT[sd],act=G.turn==sd&&!G.over&&!G.dealing,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
+  p.hand.forEach((c,i)=>{const t=i-(n-1)/2,sp=act?(sd?6:8):(sd?3.2:7),out=act?t*t*.5:0;
+   put(c,S.x+lx*t*sp+ox*out,S.y+ly*t*sp+oy*out,FL+(act?(sd%2?3:5):1+i*.15),0,S.r,sd==0?(act?1.7:SZ):SZ,sd==0?1:0,act?(sd%2?-22:-45):0,act?t*7:t*1.5,'h'+sd)})});
  G.deck.forEach((c,i)=>put(c,-24+((i*7)%5-2)*.12,((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));G.drop.forEach((c,i)=>put(c,26+((i*7)%5-2)*.2,((i*3)%5-2)*.2,FL+i/6,0,((i*37)%13)-6,SZ,1,0,0,'x'));
  G.trick.forEach((c,i)=>put(c,(i%5-2)*2.5,((i*7)%5-2)*1.2,FL+3+i*.6,0,((i*37)%13)-6,SZ,1,0,0,'t'));
  P[0].hand.forEach(c=>EL[c.u].classList.toggle('tg',!!(G.wait&&G.opts&&G.opts.includes(c))));
@@ -194,7 +194,7 @@ async function place(p,c,top){G.busy=true;pull(p.hand,c);G.trick.push(c);render(
 async function settle(w){const P=G.players,p=P[w];G.busy=true;G.turn=w;
  await showCalc(p.name+' takes the pot',G.trick.length+' cards',G.pot,w==0,'pot');
  const b0=p.score;p.score+=G.pot;G.pot=0;G.drop.push(...G.trick.splice(0));render();countUp($('r'+w),b0,p.score);await sleep(800);if(chk42())return true;
- for(let i=0;i<4;i++){const q=P[(w+i)%4];while(q.hand.length<4&&G.deck.length){q.hand.push(G.deck.pop());render();await sleep(150)}}
+ G.dealing=true;for(let i=0;i<4;i++){const q=P[(w+i)%4];while(q.hand.length<4&&G.deck.length){q.hand.push(G.deck.pop());render();await sleep(150)}}await sleep(400);G.dealing=false;
  G.round++;bump(1);if(!G.post&&G.round%3==0)news(G.stage);G.leader=w;render();
  if(!G.deck.length&&P.some(q=>!q.hand.length)){fin4();return true}return false}
 function fin4(){G.over=true;disarm();const P=[...G.players].sort((a,b)=>b.score-a.score);const w=P[0].name=='YOU';$('et2').textContent=(w?'You win! ':P[0].name+' wins. ')+fmt(P[0].score);endScreen(w)}
