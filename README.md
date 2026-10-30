@@ -42,3 +42,6 @@ If the function is missing or errors, the game silently falls back to the built-
 
 ## Ending (epilogue article)
 After the last (11th) district the game ends with a full-screen, scrollable news article. Scores do not matter: you pick one collected character as the new leader, and the story is built from 42 positive / 42 negative scenario skeletons, coloured by your collected characters, their interviews, permanent unemployment and their post-singularity group (rebel / survivor / zombie). `api/ai.js` has a `story` kind (gpt-oss-120b); without AI an offline version of the skeleton is shown. Lose: Mr. Slop is a survivor carrying samizdat. Win: you run a news source of the new civilization.
+
+## After the singularity
+At the singularity every human card becomes a rebel, survivor (value +3 / −3) or zombie (value 1 worse); a few cards fly to the player and their fate is decided on screen, then they go back on top of the deck. Rebel + rebel and zombie + zombie always pair; robots cannot be played against zombies; a zombie played on a rebel turns it into a zombie, a rebel played on a survivor recruits it. Permanently unemployed characters start every game unemployed.
