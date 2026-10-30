@@ -242,7 +242,8 @@ function chips(){const want={};
  else{add('a',G.pl.score,row(0,26,6.2),1.8,[2,0,FL+13]);add('b',G.qu.score,row(0,-26,6.2),1.8,[2,0,FL+13])}
  const dk=$('desk'),tr=(p,z,sc,rz=0)=>`translateX(${p[0]}rem) translateY(${p[1]}rem) translateZ(${z}rem) rotateZ(${rz}deg) scale(${sc})`;
  for(const key in want){const w=want[key],z=FL+.25+w.i*.55,t=tr(w.p,z,w.s,w.rz);let e=CHIPS[key];
-  if(!e){e=document.createElement('div');e.className='chip'+(w.d[3]?' pl':'');e.style.cssText='--c:'+w.d[1]+';--d:'+w.d[2]+';transform:'+tr(w.cf,w.cf[2],.5,w.rz);dk.appendChild(e);CHIPS[key]=e;void e.offsetWidth}
+  if(!e){e=document.createElement('div');e.className='chip'+(w.d[3]?' pl':'');e.style.cssText='--c:'+w.d[1]+';--d:'+w.d[2]+';transform:'+t;e._t=t;dk.appendChild(e);CHIPS[key]=e;
+  if(e.animate){const hi=tr(w.p,z+36,w.s*1.1,w.rz+160),lo=tr(w.p,z+3.5,w.s,w.rz+8);e.animate([{transform:hi,opacity:0,offset:0},{opacity:1,offset:.12},{transform:t,offset:.55,easing:'ease-out'},{transform:lo,offset:.75,easing:'ease-in'},{transform:t,offset:.9},{transform:tr(w.p,z+1,w.s,w.rz),offset:.95},{transform:t,offset:1}],{duration:900,delay:(hs(key)%9)*80+w.i*40,fill:'backwards',easing:'cubic-bezier(.5,0,.9,.6)'})}}
   if(e._t!==t){e._t=t;e.style.transform=t}e.style.opacity=1;e.style.zIndex=Math.round(z*10)+2}
  for(const key in CHIPS)if(!want[key]){const e=CHIPS[key];delete CHIPS[key];e.style.opacity=0;e.style.transform=(e.style.transform||'').replace(/scale\([^)]*\)/,'scale(.3)');setTimeout(()=>e.remove(),700)}}
 async function pairAnim(P,Q,a,b,r,mine){G.busy=true;G.turn=P===G.pl?'p':'q';G.ov={[a.u]:{x:mine?-5:-5,y:0,z:FL+13},[b.u]:{x:mine?9:9,y:0,z:FL+13}};G.sel=null;render();await sleep(900);
