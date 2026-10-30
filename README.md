@@ -45,3 +45,6 @@ After the last (11th) district the game ends with a full-screen, scrollable news
 
 ## After the singularity
 At the singularity every human card becomes a rebel, survivor (value +3 / −3) or zombie (value 1 worse); a few cards fly to the player and their fate is decided on screen, then they go back on top of the deck. Rebel + rebel and zombie + zombie always pair; robots cannot be played against zombies; a zombie played on a rebel turns it into a zombie, a rebel played on a survivor recruits it. Permanently unemployed characters start every game unemployed.
+
+## Last Newsroom – 7 players
+The final district is a 7-player elimination round. Everyone starts with $1764M; when the turn moves on from a player, they pay as much as the burn pile grew during their turn, and the AGI burns the pile. Players may pass instead of pairing. When the deck runs out the discard pile is reshuffled and the burn doubles. The last player with chips wins.
