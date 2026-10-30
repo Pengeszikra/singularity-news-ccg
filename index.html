@@ -5,7 +5,7 @@
 body{margin:0;height:100vh;overflow:hidden;color:var(--fg);font:14px Georgia,serif;background:radial-gradient(circle at 72% 18%,#2b4375,#0b1226 55%,#03050c);transition:background 2s}
 body.post{background:radial-gradient(circle at 50% 25%,#6a0f0a,#1a0202 60%,#000)}
 body.post::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,#0000 0 2px,#0005 2px 3px)}
-#desk{position:absolute;top:60%;left:50%;width:0;height:0;transform-style:preserve-3d;transform:perspective(70vw) rotateX(40deg) scale(.55) translateY(2rem);pointer-events:none}
+#desk{position:absolute;top:53%;left:50%;width:0;height:0;transform-style:preserve-3d;transform:perspective(70vw) rotateX(40deg) scale(.5) translateY(0rem);pointer-events:none}
 #pan{position:absolute;left:-50rem;top:-35rem;width:100rem;height:70rem;border-radius:7rem;background:radial-gradient(ellipse at 50% 50%,#1d3d5e,#0c1a2c 75%);border:.7rem solid #34607f;box-shadow:inset 0 0 8rem #000b,0 0 6rem #0008}
 body.post #pan{background:radial-gradient(ellipse,#4a1410,#150605 75%);border-color:#8a2a20}
 .c{position:absolute;left:-2.5rem;top:-3.6rem;width:5rem;height:7.2rem;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.3,1.25,.5,1);pointer-events:auto;cursor:pointer}
@@ -32,6 +32,7 @@ details{font-size:12px;background:#000a;border-radius:6px;padding:4px 8px;margin
 #calc{display:none;left:50%;top:24vh;transform:translate(-50%,0);min-width:15rem;padding:1rem 1.8rem;text-align:center;border:2px solid #7cc8ff;border-radius:12px;background:#000d;font-family:Georgia,serif;box-shadow:0 0 2rem #0008}#calc small{display:block;font-size:.8rem;letter-spacing:.12em;color:#7cc8ff;margin-bottom:.4rem}#calc div{font:bold 2rem sans-serif;color:#fff}#calc b{display:block;font-size:2.6rem;color:#7cff9a;margin-top:.2rem}#calc.qq{border-color:#ffc060}#calc.qq small{color:#ffc060}#calc.pp{border-color:var(--bad)}#calc.pp small{color:var(--bad)}
 #news{bottom:48px;left:10px;display:flex;gap:10px;align-items:center;max-width:min(34rem,72vw);padding:8px 12px;border-left:6px solid #4a8cff;background:#06122ae6;border-radius:8px;box-shadow:0 0 14px #000a;pointer-events:none}
 #news img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #fff6;flex:none}#news small{display:block;letter-spacing:.14em;font-size:10px;color:#8ab4ff;margin-bottom:3px;font-weight:bold}#news div{font:15px/1.25 Georgia,serif}
+body.m4 #news{bottom:auto;top:78px}
 #news.s1{border-color:#e0a84a}#news.s1 small{color:#e0a84a}#news.s2{border-color:#ff8a2a}#news.s2 small{color:#ff8a2a}#news.s3{border-color:#ff3b2f;background:#2a0606e6}#news.s3 small,#news.s4 small{color:#ff3b2f}#news.s4{border-color:#ff3b2f;background:#3a0000f0;animation:blink 1s infinite}@keyframes blink{50%{box-shadow:0 0 22px #f33}}
 .un{display:none;position:absolute;left:0;right:0;top:46%;background:#c22d;color:#fff;font:bold .55rem/.95rem sans-serif;text-align:center;text-decoration:none;letter-spacing:.08em;transform:rotate(-8deg)}.unemp .un{display:block}.unemp img{filter:grayscale(.85) brightness(.85)}
 #tm{display:none;top:16vh;left:50%;transform:translateX(-50%);min-width:8rem;text-align:center;font:bold 2.2rem/1.2 sans-serif;color:#ff6a5a;border:2px solid var(--bad);border-radius:10px;background:#000b;padding:.4rem 1.2rem .6rem}#tm i{display:block;height:6px;background:var(--bad);margin-top:6px;transform-origin:left;border-radius:3px}
@@ -111,7 +112,7 @@ function match(a,b){const x=a.v,y=b.v,m=G.post?2:1;
  if(x&&x==-y)return{k:'INVERZIT',s:Math.abs(x)*4*m};return null}
 const moves=(A,B)=>A.flatMap(a=>B.map(b=>({a,b,r:match(a,b)}))).filter(m=>m.r);
 let AUTO=false;const fmt=n=>'$'+n+'M',OPP=()=>G&&G.post?'AGI':'BIG TECH CEO';
-const FL=5,UP=16,SZ=2.2,HX=i=>-21+11*i;
+const FL=.6,UP=16,SZ=2.2,HX=i=>-21+11*i;
 function init(){clearChips();$('eb4').style.display='none';if(G&&G.tm)disarm();document.body.classList.remove('post','m4');$('end').style.display='none';document.querySelectorAll('.c').forEach(e=>e.remove());
  const ids=[...shuf(OWN.slice()),...shuf([...CARDS.keys()].filter(i=>!OWN.includes(i)))].map(i=>mk(CARDS[i]));const E=d=>({deck:d,hand:[],drop:[],score:0});
  G={pl:E(ids.slice(0,CFG.pl)),qu:E(ids.slice(CFG.pl,CFG.pl+CFG.qu)),sing:0,stage:0,turn:'p',round:1,post:false,sel:null,busy:true,over:false,ov:{}};
@@ -126,7 +127,7 @@ let STG=0;function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1,tilt=0,fan=0,zn=''){cons
  const q=e.querySelector;e.querySelector('.vb').textContent=c.v;e.querySelector('.nm').textContent=c.n;e.querySelector('.cv').style.opacity=face?0:1;
  e.classList.toggle('fd',!face);e.classList.toggle('pst',c.post);e.classList.toggle('unemp',!!c.un);e.classList.toggle('sel',G.sel===c);e.classList.toggle('tg',!!(G.sel&&G.qu.hand.includes(c)&&match(G.sel,c)));e.style.zIndex=Math.round(z*10)}
 function render(){STG=0;if(G.mode==4)return render4();const {pl,qu,ov}=G;
- [[pl,11],[qu,-11]].forEach(([p,y])=>{p.deck.forEach((c,i)=>put(c,-34+((i*7)%5-2)*.12,y+((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));
+ [[pl,17],[qu,-17]].forEach(([p,y])=>{p.deck.forEach((c,i)=>put(c,-34+((i*7)%5-2)*.12,y+((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));
   p.hand.forEach((c,i)=>{const o=ov[c.u];o?put(c,o.x,o.y,o.z,-25,0,SZ,1,0,0,'o'):put(c,HX(i),y,FL,G.sel===c?-22:0,0,SZ,1,0,0,'h')});
   p.drop.forEach((c,i)=>put(c,36+((i*7)%5-2)*.2,y,FL+i/4,0,((i*37)%13)-6,SZ,1,0,0,'x'))});
  $('qs').innerHTML='<small>'+OPP()+' · BURNED</small>'+fmt(qu.score);$('ps').innerHTML='<small>YOU · REVENUE</small>'+fmt(pl.score);const tn=G.over?'':G.busy?G.turn:'p';$('hp').classList.toggle('on',tn=='p');$('hq').classList.toggle('on',tn=='q');
@@ -188,7 +189,7 @@ function render4(){STG=0;const P=G.players;
  P.forEach((p,sd)=>{const S=SEAT[sd],act=G.turn==sd&&!G.over&&!G.dealing,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
   p.hand.forEach((c,i)=>{const t=i-(n-1)/2,sp=act?(sd?6:8):(sd?3.2:7),out=act?t*t*.5:0;
    put(c,S.x+lx*t*sp+ox*out,S.y+ly*t*sp+oy*out,FL+(act?(sd%2?3:5):1+i*.15),0,S.r,sd==0?(act?1.7:SZ):SZ,sd==0?1:0,act?(sd%2?-22:-45):0,act?t*7:t*1.5,'h'+sd)})});
- G.deck.forEach((c,i)=>put(c,-24+((i*7)%5-2)*.12,((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));G.drop.forEach((c,i)=>put(c,26+((i*7)%5-2)*.2,((i*3)%5-2)*.2,FL+i/6,0,((i*37)%13)-6,SZ,1,0,0,'x'));
+ G.deck.forEach((c,i)=>put(c,-38+((i*7)%5-2)*.12,23+((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));G.drop.forEach((c,i)=>put(c,38+((i*7)%5-2)*.2,23+((i*3)%5-2)*.2,FL+i/6,0,((i*37)%13)-6,SZ,1,0,0,'x'));
  G.trick.forEach((c,i)=>put(c,(i%5-2)*2.5,((i*7)%5-2)*1.2,FL+3+i*.6,0,((i*37)%13)-6,SZ,1,0,0,'t'));
  P[0].hand.forEach(c=>EL[c.u].classList.toggle('tg',!!(G.wait&&G.opts&&G.opts.includes(c))));
  $('eb4').style.display=(G.more&&G.wait&&!G.over&&!AUTO)?'block':'none';$('sb').innerHTML=P.map((p,i)=>`<div class="r${G.turn==i&&!G.over?' on':''}" id="r${i}"><span>${p.name}</span>${fmt(p.score)}</div>`).join('')+`<div class="pot">POT ${fmt(G.pot)} · deck ${G.deck.length}</div>`;
@@ -232,18 +233,18 @@ function chk42(){if(G.over)return false;let w=null;
  $('et2').textContent=(me?'You win! ':name+' wins. ')+'$42M – the answer to everything.';setTimeout(()=>endScreen(me),2200);return true}
 const DEN=[[500,'#8a3fd0','#3c1766',1],[100,'#26262b','#000',1],[25,'#2fa84f','#14602b',0],[5,'#d83a3a','#7a1414',0],[1,'#f4f1ea','#9a948a',0]],CHIPS={};
 function clearChips(){Object.keys(CHIPS).forEach(k=>{CHIPS[k].remove();delete CHIPS[k]})}
-const hs=t=>{let x=7;for(let i=0;i<t.length;i++)x=(x*31+t.charCodeAt(i))>>>0;x^=x>>>13;x=Math.imul(x,1274126177)>>>0;return x^(x>>>16)};
+const hs=t=>{let x=7;for(let i=0;i<t.length;i++)x=(x*31+t.charCodeAt(i))>>>0;x^=x>>>13;x=Math.imul(x,1274126177)>>>0;return (x^(x>>>16))>>>0};
 function chips(){const want={};
- const add=(o,score,pos,s,cf)=>{let r=Math.max(0,score|0);DEN.forEach((d,k)=>{const n=Math.floor(r/d[0]);r-=n*d[0];for(let i=0;i<n&&i<14;i++){const h=hs(o+k),g=hs(o+k+i),b=pos(k);want[o+'|'+k+'|'+i]={d,i,p:[b[0]+((h%100)/100-.5)*3.4+(((g%100)/100-.5)*.7),b[1]+(((h>>7)%100)/100-.5)*2.6+((((g>>7)%100)/100-.5)*.7)],rz:d[3]?(((h>>3)%60)-30)+(((g>>5)%16)-8):(g>>4)%360,s,cf}}})};
+ const add=(o,score,pos,s,cf)=>{let r=Math.max(0,score|0);DEN.forEach((d,k)=>{const n=Math.floor(r/d[0]);r-=n*d[0];for(let i=0;i<n&&i<14;i++){const h=hs(o+k),g=hs(o+k+i),b=pos(k);want[o+'|'+k+'|'+i]={d,i,p:[b[0]+((h%100)/100-.5)*3.4+(((g%100)/100-.5)*.7),b[1]+(((h>>>7)%100)/100-.5)*2.6+((((g>>>7)%100)/100-.5)*.7)],rz:d[3]?(((h>>>3)%60)-30)+(((g>>>5)%16)-8):(g>>>4)%360,s,cf}}})};
  const row=(cx,cy,dx)=>k=>[cx+(k-2)*dx,cy];
- if(G.mode==4){const L=[[0,28.5,1.8,6.2],[-38,25,1.5,3.3],[0,-28.5,1.8,6.2],[38,-25,1.5,3.3]];
+ if(G.mode==4){const L=[[0,28.5,1.8,6.2],[-38,-25,1.5,3.3],[0,-28.5,1.8,6.2],[38,-25,1.5,3.3]];
   G.players.forEach((p,i)=>add('p'+i,p.score,row(L[i][0],L[i][1],L[i][3]),L[i][2],[16,2,FL+3]));
   add('pot',G.pot,k=>[13.5+(k%2)*5,-6+(k>>1)*5.5],1.8,[0,0,FL+8])}
  else{add('a',G.pl.score,row(0,26,6.2),1.8,[2,0,FL+13]);add('b',G.qu.score,row(0,-26,6.2),1.8,[2,0,FL+13])}
  const dk=$('desk'),tr=(p,z,sc,rz=0)=>`translateX(${p[0]}rem) translateY(${p[1]}rem) translateZ(${z}rem) rotateZ(${rz}deg) scale(${sc})`;
  for(const key in want){const w=want[key],z=FL+.25+w.i*.55,t=tr(w.p,z,w.s,w.rz);let e=CHIPS[key];
   if(!e){e=document.createElement('div');e.className='chip'+(w.d[3]?' pl':'');e.style.cssText='--c:'+w.d[1]+';--d:'+w.d[2]+';transform:'+t;e._t=t;dk.appendChild(e);CHIPS[key]=e;
-  if(e.animate){const hi=tr(w.p,z+36,w.s*1.1,w.rz+160),lo=tr(w.p,z+3.5,w.s,w.rz+8);e.animate([{transform:hi,opacity:0,offset:0},{opacity:1,offset:.12},{transform:t,offset:.55,easing:'ease-out'},{transform:lo,offset:.75,easing:'ease-in'},{transform:t,offset:.9},{transform:tr(w.p,z+1,w.s,w.rz),offset:.95},{transform:t,offset:1}],{duration:900,delay:(hs(key)%9)*80+w.i*40,fill:'backwards',easing:'cubic-bezier(.5,0,.9,.6)'})}}
+  if(e.animate){const hi=tr(w.p,z+9,w.s,w.rz+70);e.animate([{transform:hi,opacity:0,offset:0},{opacity:1,offset:.2},{transform:t,offset:1}],{duration:380,delay:(hs(key)%9)*70+w.i*35,fill:'backwards',easing:'cubic-bezier(.55,0,.9,.55)'})}}
   if(e._t!==t){e._t=t;e.style.transform=t}e.style.opacity=1;e.style.zIndex=Math.round(z*10)+2}
  for(const key in CHIPS)if(!want[key]){const e=CHIPS[key];delete CHIPS[key];e.style.opacity=0;e.style.transform=(e.style.transform||'').replace(/scale\([^)]*\)/,'scale(.3)');setTimeout(()=>e.remove(),700)}}
 async function pairAnim(P,Q,a,b,r,mine){G.busy=true;G.turn=P===G.pl?'p':'q';G.ov={[a.u]:{x:mine?-5:-5,y:0,z:FL+13},[b.u]:{x:mine?9:9,y:0,z:FL+13}};G.sel=null;render();await sleep(900);
