@@ -82,6 +82,9 @@ body.m4 .seat{display:block}body.m4 .half,body.m4 .sc{display:none}body:not(.m4)
 #cd .gc{width:min(46vw,calc((100vh - 24px)*176/232))}
 #grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
 #rv{gap:8px}#rv h2{font-size:18px}.fc{width:min(18vw,calc((100vh - 120px)*176/232),130px)}}
+@media (max-height:620px),(max-width:700px){
+#rules{left:12.5vw;right:auto;width:75vw;border:2px solid var(--ac);border-radius:0 0 14px 14px;border-top:0;transform:translateX(110vw);font-size:15px;padding:14px 5vw 28px}
+#rules.open{transform:none}#rules h2{text-align:center}#rules h3{text-align:center}}
 </style></head><body>
 <div id="desk"><div id="pan"></div><div class="half" id="hq"></div><div class="half" id="hp"></div><div class="seat" id="st0"><span>YOU</span></div><div class="seat" id="st1"><span>WEST</span></div><div class="seat" id="st2"><span>NORTH</span></div><div class="seat" id="st3"><span>EAST</span></div></div>
 <div id="top"><h1><span>Singularity New CCG</span><span class="bt"><button id="au">Auto: off</button><button id="cb">Cards</button><button id="rl">Rules</button><button id="fs" title="Full screen">⛶</button><button id="nw">New game</button></span></h1>
