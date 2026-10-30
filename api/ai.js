@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
       const cast = (Array.isArray(b.cast) ? b.cast : []).slice(0, 7).map(x => ({ r: clean(x.role, 2), n: clean(x.n, 40), f: FAM.includes(x.fam) || x.fam === 'Anchor' ? x.fam : 'Civilian', g: ['rebel', 'survivor', 'zombie', 'robot'].includes(x.g) ? x.g.toUpperCase() : 'SURVIVOR', un: x.un === true, i: clean(x.int, 300) })).filter(x => x.n);
       const beats = (Array.isArray(b.beats) ? b.beats : []).slice(0, 5).map(x => clean(x, 320)).filter(Boolean), head = clean(b.head, 140), paper = clean(b.paper, 40);
       if (!cast.length || !beats.length || !head) return res.status(400).json({ error: 'story input' }); used++;
-      const user = `Outcome: the player ${b.win ? 'WON' : 'LOST'}. Newspaper: ${paper}.\nHeadline skeleton: ${head}\nBeats:\n${beats.map((x, k) => (k + 1) + '. ' + x).join('\n')}\nCast:\n${cast.map(x => `- ${x.r === 'L' ? 'NEW LEADER ' : ''}${x.n} | family ${x.f} | group ${x.g} | permanently unemployed before the singularity: ${x.un ? 'yes' : 'no'} | interview: ${x.i || 'none'}`).join('\n')}`;
+      const user = `Outcome: the player ${b.win ? 'WON' : 'LOST'}. Newspaper: ${paper}.\nHeadline skeleton: ${head}\nBeats:\n${beats.map((x, k) => (k + 1) + '. ' + x).join('\n')}\nCast:\n${cast.map(x => `- ${x.r === 'L' ? (b.boss === true ? 'NEW LEADER, THE NARRATOR\'S BOSS ' : 'NEW LEADER ') : ''}${x.n} | family ${x.f} | group ${x.g} | permanently unemployed before the singularity: ${x.un ? 'yes' : 'no'} | interview: ${x.i || 'none'}`).join('\n')}`;
       const text = await llm(SYS.story, user, 4000);
       return res.json({ text: text.replace(/\*+/g, '').slice(0, 4500) });
     }
