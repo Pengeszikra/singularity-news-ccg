@@ -241,7 +241,7 @@ async function oppMove(){const {pl,qu}=G;G.sel=null;G.busy=true;G.turn='q';rende
 async function timeout(){if(G.mode==4){if(G.wait)G.wait(null);return}if(G.busy||G.over)return;log('Time is up – '+OPP()+' moves!');await oppMove()}
 const ZONES=()=>G.mode==4?[...G.players.map(p=>p.hand),G.deck,G.drop,G.trick]:[G.pl,G.qu].flatMap(p=>[p.deck,p.hand,p.drop]);
 const NEWC={};let CFG={pl:24,qu:30,t:40},DONE=[],CUR=-1;
-const NODES=[{n:'Startup Alley',t:'q',pl:10,qu:12,x:14.0,y:66},{n:'Coffee Row',t:'q',pl:12,qu:16,x:26.2,y:40},{n:'Co-working Plaza',t:'4',tot:28,x:38.4,y:68},{n:'Slop Studio',t:'q',pl:16,qu:20,x:50.6,y:34},{n:'Data Docks',t:'4',tot:36,x:62.8,y:64},{n:'Venture Tower',t:'q',pl:20,qu:26,x:75.0,y:32},{n:'Bunker Market',t:'7',tot:64,x:87.2,y:62},{n:'Ash Boulevard',t:'q',pl:22,qu:28,x:99.4,y:36,post:1},{n:'Signal Ruins',t:'4',tot:52,x:111.6,y:66,post:1},{n:'Mirror Market',t:'q',pl:24,qu:30,x:123.8,y:34,post:1},{n:'Last Newsroom',t:'7',tot:64,x:136.0,y:60,post:1}];
+const NODES=[{n:'Startup Alley',t:'q',pl:10,qu:12,x:14.0,y:66},{n:'Coffee Row',t:'q',pl:12,qu:16,x:26.2,y:40},{n:'Co-working Plaza',t:'4',tot:16,x:38.4,y:68},{n:'Slop Studio',t:'q',pl:16,qu:20,x:50.6,y:34},{n:'Data Docks',t:'4',tot:18,x:62.8,y:64},{n:'Venture Tower',t:'q',pl:20,qu:26,x:75.0,y:32},{n:'Bunker Market',t:'7',tot:32,x:87.2,y:62},{n:'Ash Boulevard',t:'q',pl:22,qu:28,x:99.4,y:36,post:1},{n:'Signal Ruins',t:'4',tot:26,x:111.6,y:66,post:1},{n:'Mirror Market',t:'q',pl:24,qu:30,x:123.8,y:34,post:1},{n:'Last Newsroom',t:'7',tot:32,x:136.0,y:60,post:1}];
 try{DONE=JSON.parse(localStorage.getItem('sccg-done')||'[]')}catch(e){}
 const saveDone=()=>{try{localStorage.setItem('sccg-done',JSON.stringify(DONE))}catch(e){}};
 const unlocked=i=>i==0||!!DONE[i-1];
@@ -268,7 +268,7 @@ function init4(){clearChips();if(G&&G.tm)disarm();const N7=!!(NODES[CUR]&&NODES[
  G={mode:4,seven:N7,players:(N7?['YOU','ANNA','BOLT','CASS','DREW','EVE','FINN']:['YOU','WEST','NORTH','EAST']).map(n=>({name:n,hand:[],score:N7?144:0})),deck:ids,drop:[],trick:[],pot:0,leader:Math.random()*(N7?7:4)|0,turn:0,sing:0,stage:0,round:1,post:false,sel:null,busy:true,dealing:true,dir:1,over:false,ov:{}};
  G.pl=G.players[0];G.qu={hand:[],deck:[],drop:[],score:0};
  ids.forEach(c=>{const e=document.createElement('div');e.className='c f'+c.f;e.dataset.u=c.u;e.innerHTML='<div class="ci"><img src="'+IM[c.i]+'" alt=""><i class="vb"></i><b class="nm"></b><u class="un">UNEMPLOYED</u><div class="cv"></div></div>';$('desk').appendChild(e);EL[c.u]=e});
- if(isPost())ascend(true);render();(async()=>{await sleep(500);if(G.post)await regroup(true);else{for(let k=0;k<4;k++)for(const p of G.players){p.hand.push(G.deck.pop());render();await sleep(120)}await sleep(500)}G.dealing=false;render();if(!G.post)news(0);await play4()})()}
+ if(isPost())ascend(true);render();(async()=>{await sleep(500);if(G.post)await regroup(true);else{for(let k=0;k<4;k++)for(const p of G.players){if(G.deck.length)p.hand.push(G.deck.pop());render();await sleep(120)}await sleep(500)}G.dealing=false;render();if(!G.post)news(0);await play4()})()}
 function render4(){STG=0;const P=G.players;
  const SEAT=G.seven?SEAT7:[{x:0,y:22,r:0},{x:-38,y:0,r:90},{x:0,y:-19,r:180},{x:38,y:0,r:-90}],oz=G.seven?SZ*.72:SZ;
  P.forEach((p,sd)=>{const S=SEAT[sd],sde=Math.abs(S.r)==90,act=G.turn==sd&&!G.over&&!G.dealing,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
@@ -512,7 +512,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.10.31.010';$('ver').textContent='v'+VER;
+const VER='26.10.31.011';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
