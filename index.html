@@ -76,6 +76,12 @@ body.m4 .seat{display:block}body.m4 .half,body.m4 .sc{display:none}body:not(.m4)
 #rv{display:none;position:fixed;inset:0;z-index:22;background:#000d;flex-direction:column;align-items:center;justify-content:center;gap:18px;font-family:system-ui,sans-serif;color:#eadfc8}#rv h2{margin:0;color:var(--ac)}
 #rvc{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;perspective:900px;padding:0 12px}.fc{width:min(20vw,130px);aspect-ratio:176/232}.fi{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s}.fi.fl{transform:rotateY(180deg)}
 .fr,.bk{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden}.fr{transform:rotateY(180deg)}.fr .gc{width:100%;height:100%;aspect-ratio:auto}.bk{background:repeating-linear-gradient(45deg,#3a2a14,#3a2a14 8px,#55401f 8px 16px);border:3px solid #7a5a2a}
+@media (orientation:landscape) and (max-height:620px){
+#cd{display:none;flex-direction:row;gap:6vw;padding:12px 6vw}#cd[style*="flex"]{display:grid!important;grid-template-columns:auto minmax(0,22rem);grid-template-rows:1fr auto;align-items:center;justify-content:center;column-gap:6vw;row-gap:12px;text-align:left}
+#cdc{grid-row:1/3;grid-column:1;display:flex;align-items:center}#cdt{grid-column:2;grid-row:1;align-self:end;font-size:15px;line-height:1.5}#cdx{grid-column:2;grid-row:2;align-self:start;justify-self:start;padding:8px 22px}
+#cd .gc{width:min(46vw,calc((100vh - 24px)*176/232))}
+#grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+#rv{gap:8px}#rv h2{font-size:18px}.fc{width:min(18vw,calc((100vh - 120px)*176/232),130px)}}
 </style></head><body>
 <div id="desk"><div id="pan"></div><div class="half" id="hq"></div><div class="half" id="hp"></div><div class="seat" id="st0"><span>YOU</span></div><div class="seat" id="st1"><span>WEST</span></div><div class="seat" id="st2"><span>NORTH</span></div><div class="seat" id="st3"><span>EAST</span></div></div>
 <div id="top"><h1><span>Singularity New CCG</span><span class="bt"><button id="au">Auto: off</button><button id="cb">Cards</button><button id="rl">Rules</button><button id="fs" title="Full screen">⛶</button><button id="nw">New game</button></span></h1>
