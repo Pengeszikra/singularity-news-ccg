@@ -27,13 +27,13 @@ The game runs fully without AI (built-in headlines and texts). When the page is 
 - **Card interviews**: a short Q&A with any collected character (button in the card view, cached per card)
 - **Final district**: starts already after the singularity, and the ending report is written by the AI
 
-The API key stays on the server. Set these environment variables in Vercel:
+The API key stays on the server. It uses the same setup as [terminal-is-your-friend](https://dev.to/pengeszikra/terminal-is-your-friend-2b49): Groq with the open-weight `openai/gpt-oss-120b` model. Set in Vercel:
 
 | Variable | Meaning |
 | --- | --- |
-| `AI_API_KEY` | key of an OpenAI-compatible chat-completions endpoint |
-| `AI_BASE_URL` | e.g. `https://<provider>/v1` (the function calls `<base>/chat/completions`) |
-| `AI_MODEL` | model id, ideally an open-weight model |
+| `GROQ_API_KEY` | server-side key (required) |
+| `AI_BASE_URL` | optional, default `https://api.groq.com/openai/v1` |
+| `AI_MODEL` | optional, default `openai/gpt-oss-120b` |
 | `AI_DAILY_CAP` | optional, upstream calls per day (default 300) |
 | `AI_PER_IP_HOUR` | optional, calls per IP per hour (default 24) |
 | `ALLOWED_ORIGIN` | optional CORS origin (default `*`) |
