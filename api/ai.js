@@ -23,6 +23,8 @@ A: ...
 Questions are one line. Answers are 1-2 sentences, in the character's voice, showing how they feel about the coming singularity at the given stage (0 calm ... 4 it has happened; at stage 4 humans are Echoes). Max 110 words total. No markdown. If the status says the character is permanently unemployed (laid off for good, replaced), the interview should be bitter, lost or quietly adapting, and mention the job loss.`,
   ending: `${WORLD}
 Write the closing report of a finished game as Mr. Slop (or the AGI voice if the singularity has arrived), 3-4 sentences, max 80 words, mentioning the outcome and at most two of the given cards. Win = bittersweet survival, loss = ominous. No markdown.`,
+  intro: `${WORLD}
+A character card has just been flipped face up and introduces the game to a new player, in the character's own voice and style (shaped by its name and family). 3-4 sentences, max 85 words. Mention: Singularity News counting down to the singularity, pairing cards by number rules, walking the city map district by district and collecting characters, and that the story is written at the very end. Plain text, no markdown, start speaking immediately.`,
   story: `${WORLD}
 You write the epilogue of the game as a short magazine-style news article, 380-520 words, 5-7 paragraphs, vivid, literary, darkly funny and human.
 You receive: the outcome, a newspaper name, a story skeleton (a headline and ordered beats) and a cast list. Follow the skeleton: keep every event in order, but colour it with the cast.
@@ -78,6 +80,12 @@ module.exports = async (req, res) => {
       const names = Array.isArray(b.cards) ? b.cards.slice(0, 3).map(x => clean(x, 40)).filter(Boolean) : [], sc = Array.isArray(b.scores) ? b.scores.slice(0, 4).map(x => ({ n: clean(x.n, 12), s: parseInt(x.s) || 0 })) : [];
       used++;
       const text = await llm(SYS.ending, `Outcome: ${b.win ? 'the player WON' : 'the player LOST'}. Singularity: ${b.post ? 'arrived' : 'not yet'}. Scores: ${sc.map(x => x.n + ' $' + x.s + 'M').join(', ')}. Notable cards: ${names.join(', ') || 'none'}.`);
+      return res.json({ text: text.replace(/\*+/g, '').slice(0, 700) });
+    }
+    if (kind === 'intro') {
+      const name = clean(b.name, 40), fam = FAM.includes(b.family) ? b.family : 'Civilian';
+      if (!name) return res.status(400).json({ error: 'name' }); used++;
+      const text = await llm(SYS.intro, `Character: ${name}. Family: ${fam}.`);
       return res.json({ text: text.replace(/\*+/g, '').slice(0, 700) });
     }
     if (kind === 'story') {
