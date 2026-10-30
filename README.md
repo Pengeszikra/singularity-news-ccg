@@ -39,3 +39,6 @@ The API key stays on the server. It uses the same setup as [terminal-is-your-fri
 | `ALLOWED_ORIGIN` | optional CORS origin (default `*`) |
 
 If the function is missing or errors, the game silently falls back to the built-in texts.
+
+## Ending (epilogue article)
+After the last (11th) district the game ends with a full-screen, scrollable news article. Scores do not matter: you pick one collected character as the new leader, and the story is built from 42 positive / 42 negative scenario skeletons, coloured by your collected characters, their interviews, permanent unemployment and their post-singularity group (rebel / survivor / zombie). `api/ai.js` has a `story` kind (gpt-oss-120b); without AI an offline version of the skeleton is shown. Lose: Mr. Slop is a survivor carrying samizdat. Win: you run a news source of the new civilization.
