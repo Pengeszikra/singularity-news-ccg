@@ -119,15 +119,15 @@ function init(){clearChips();$('eb4').style.display='none';if(G&&G.tm)disarm();d
  render();(async()=>{await sleep(600);for(let i=0;i<4;i++){draw(G.pl,i+1);render();await sleep(250)}for(let i=0;i<2;i++){draw(G.qu,i+1);render();await sleep(250)}
  news(0);G.busy=false;log('Pick one of your cards, then a quest card to pair with.');render();if(!moves(G.pl.hand,G.qu.hand).length)nextPhase()})()}
 const TF=a=>`translateX(${a[0]}rem) translateY(${a[1]}rem) translateZ(${a[2]}rem) rotateX(${a[3]}deg) rotateZ(${a[4]}deg) rotateX(${a[6]}deg) rotateZ(${a[7]}deg) scale(${a[5]})`;
-function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1,tilt=0,fan=0,zn=''){const e=EL[c.u],P=[x,y,z,rX,rZ,zoom,tilt,fan];
- if(zn&&e._zn&&e._zn!==zn&&e._P&&e.animate){const A=e._P,M=P.map((v,k)=>(v+A[k])/2);M[2]=Math.max(A[2],z)+5;M[5]=Math.max(A[5],zoom)*1.1;M[6]=(A[6]+tilt)/2-3;
-  e.animate([{transform:TF(A)},{transform:TF(M),offset:.45},{transform:TF(P)}],{duration:720,easing:'cubic-bezier(.3,.7,.4,1)'})}
+let STG=0;function put(c,x,y,z,rX=0,rZ=0,zoom=SZ,face=1,tilt=0,fan=0,zn=''){const e=EL[c.u],P=[x,y,z,rX,rZ,zoom,tilt,fan],zc=!!(zn&&e._zn&&e._zn!==zn),dl=zc?Math.min(STG++,6)*.2:0;if(zc)e.style.transitionDelay=dl+'s';
+ if(zc&&e._P&&e.animate){const A=e._P,M=P.map((v,k)=>(v+A[k])/2);M[2]=Math.max(A[2],z)+5;M[5]=Math.max(A[5],zoom)*1.1;M[6]=(A[6]+tilt)/2-3;
+  e.animate([{transform:TF(A)},{transform:TF(M),offset:.45},{transform:TF(P)}],{duration:720,delay:dl*1000,fill:'backwards',easing:'cubic-bezier(.3,.7,.4,1)'})}
  e._P=P;e._zn=zn||e._zn;e.style.transform=TF(P);
  const q=e.querySelector;e.querySelector('.vb').textContent=c.v;e.querySelector('.nm').textContent=c.n;e.querySelector('.cv').style.opacity=face?0:1;
  e.classList.toggle('fd',!face);e.classList.toggle('pst',c.post);e.classList.toggle('unemp',!!c.un);e.classList.toggle('sel',G.sel===c);e.classList.toggle('tg',!!(G.sel&&G.qu.hand.includes(c)&&match(G.sel,c)));e.style.zIndex=Math.round(z*10)}
-function render(){if(G.mode==4)return render4();const {pl,qu,ov}=G;
+function render(){STG=0;if(G.mode==4)return render4();const {pl,qu,ov}=G;
  [[pl,11],[qu,-11]].forEach(([p,y])=>{p.deck.forEach((c,i)=>put(c,-34+((i*7)%5-2)*.12,y+((i*3)%5-2)*.12,FL+i/3,0,((i*13)%7-3)*.5,SZ,0,0,0,'d'));
-  p.hand.forEach((c,i)=>{const o=ov[c.u];o?put(c,o.x,o.y,o.z,-25,0,SZ,1,0,0,'h'):put(c,HX(i),y,FL,G.sel===c?-22:0,0,SZ,1,0,0,'h')});
+  p.hand.forEach((c,i)=>{const o=ov[c.u];o?put(c,o.x,o.y,o.z,-25,0,SZ,1,0,0,'o'):put(c,HX(i),y,FL,G.sel===c?-22:0,0,SZ,1,0,0,'h')});
   p.drop.forEach((c,i)=>put(c,36+((i*7)%5-2)*.2,y,FL+i/4,0,((i*37)%13)-6,SZ,1,0,0,'x'))});
  $('qs').innerHTML='<small>'+OPP()+' · BURNED</small>'+fmt(qu.score);$('ps').innerHTML='<small>YOU · REVENUE</small>'+fmt(pl.score);const tn=G.over?'':G.busy?G.turn:'p';$('hp').classList.toggle('on',tn=='p');$('hq').classList.toggle('on',tn=='q');
  if(G.post&&!G.busy&&!G.over&&!AUTO){if(!G.tm)arm()}else if(G.tm)disarm();if(AUTO&&!G.busy&&!G.over&&!G.ap){G.ap=1;setTimeout(()=>{G.ap=0;autoQuest()},900)}$('mi').style.width=G.sing/SING*100+'%';$('ml').textContent=G.post?'SINGULARITY – nothing is what it was':`Singularity ${G.sing} / ${SING} · round ${G.round}`;chips()}
@@ -183,7 +183,7 @@ function init4(){clearChips();if(G&&G.tm)disarm();document.body.classList.remove
  G.pl=G.players[0];G.qu={hand:[],deck:[],drop:[],score:0};
  ids.forEach(c=>{const e=document.createElement('div');e.className='c f'+c.f;e.dataset.u=c.u;e.innerHTML='<div class="ci"><img src="'+IM[c.i]+'" alt=""><i class="vb"></i><b class="nm"></b><u class="un">UNEMPLOYED</u><div class="cv"></div></div>';$('desk').appendChild(e);EL[c.u]=e});
  render();(async()=>{await sleep(500);for(let k=0;k<4;k++)for(const p of G.players){p.hand.push(G.deck.pop());render();await sleep(120)}await sleep(500);G.dealing=false;render();news(0);await play4()})()}
-function render4(){const P=G.players;
+function render4(){STG=0;const P=G.players;
  const SEAT=[{x:0,y:22,r:0},{x:-38,y:0,r:90},{x:0,y:-19,r:180},{x:38,y:0,r:-90}];
  P.forEach((p,sd)=>{const S=SEAT[sd],act=G.turn==sd&&!G.over&&!G.dealing,n=p.hand.length,rr=S.r*Math.PI/180,lx=Math.cos(rr),ly=Math.sin(rr),ox=-Math.sin(rr),oy=Math.cos(rr);
   p.hand.forEach((c,i)=>{const t=i-(n-1)/2,sp=act?(sd?6:8):(sd?3.2:7),out=act?t*t*.5:0;
@@ -232,16 +232,17 @@ function chk42(){if(G.over)return false;let w=null;
  $('et2').textContent=(me?'You win! ':name+' wins. ')+'$42M – the answer to everything.';setTimeout(()=>endScreen(me),2200);return true}
 const DEN=[[500,'#8a3fd0','#3c1766',1],[100,'#26262b','#000',1],[25,'#2fa84f','#14602b',0],[5,'#d83a3a','#7a1414',0],[1,'#f4f1ea','#9a948a',0]],CHIPS={};
 function clearChips(){Object.keys(CHIPS).forEach(k=>{CHIPS[k].remove();delete CHIPS[k]})}
+const hs=t=>{let x=7;for(let i=0;i<t.length;i++)x=(x*31+t.charCodeAt(i))>>>0;x^=x>>>13;x=Math.imul(x,1274126177)>>>0;return x^(x>>>16)};
 function chips(){const want={};
- const add=(o,score,pos,s,cf)=>{let r=Math.max(0,score|0);DEN.forEach((d,k)=>{const n=Math.floor(r/d[0]);r-=n*d[0];for(let i=0;i<n&&i<14;i++)want[o+'|'+k+'|'+i]={d,i,p:pos(k),s,cf}})};
+ const add=(o,score,pos,s,cf)=>{let r=Math.max(0,score|0);DEN.forEach((d,k)=>{const n=Math.floor(r/d[0]);r-=n*d[0];for(let i=0;i<n&&i<14;i++){const h=hs(o+k),g=hs(o+k+i),b=pos(k);want[o+'|'+k+'|'+i]={d,i,p:[b[0]+((h%100)/100-.5)*3.4+(((g%100)/100-.5)*.7),b[1]+(((h>>7)%100)/100-.5)*2.6+((((g>>7)%100)/100-.5)*.7)],rz:d[3]?(((h>>3)%60)-30)+(((g>>5)%16)-8):(g>>4)%360,s,cf}}})};
  const row=(cx,cy,dx)=>k=>[cx+(k-2)*dx,cy];
  if(G.mode==4){const L=[[0,28.5,1.8,6.2],[-38,25,1.5,3.3],[0,-28.5,1.8,6.2],[38,-25,1.5,3.3]];
   G.players.forEach((p,i)=>add('p'+i,p.score,row(L[i][0],L[i][1],L[i][3]),L[i][2],[16,2,FL+3]));
   add('pot',G.pot,k=>[13.5+(k%2)*5,-6+(k>>1)*5.5],1.8,[0,0,FL+8])}
  else{add('a',G.pl.score,row(0,26,6.2),1.8,[2,0,FL+13]);add('b',G.qu.score,row(0,-26,6.2),1.8,[2,0,FL+13])}
- const dk=$('desk'),tr=(p,z,sc)=>`translateX(${p[0]}rem) translateY(${p[1]}rem) translateZ(${z}rem) scale(${sc})`;
- for(const key in want){const w=want[key],z=FL+.25+w.i*.55,t=tr(w.p,z,w.s);let e=CHIPS[key];
-  if(!e){e=document.createElement('div');e.className='chip'+(w.d[3]?' pl':'');e.style.cssText='--c:'+w.d[1]+';--d:'+w.d[2]+';transform:'+tr(w.cf,w.cf[2],.5);dk.appendChild(e);CHIPS[key]=e;void e.offsetWidth}
+ const dk=$('desk'),tr=(p,z,sc,rz=0)=>`translateX(${p[0]}rem) translateY(${p[1]}rem) translateZ(${z}rem) rotateZ(${rz}deg) scale(${sc})`;
+ for(const key in want){const w=want[key],z=FL+.25+w.i*.55,t=tr(w.p,z,w.s,w.rz);let e=CHIPS[key];
+  if(!e){e=document.createElement('div');e.className='chip'+(w.d[3]?' pl':'');e.style.cssText='--c:'+w.d[1]+';--d:'+w.d[2]+';transform:'+tr(w.cf,w.cf[2],.5,w.rz);dk.appendChild(e);CHIPS[key]=e;void e.offsetWidth}
   if(e._t!==t){e._t=t;e.style.transform=t}e.style.opacity=1;e.style.zIndex=Math.round(z*10)+2}
  for(const key in CHIPS)if(!want[key]){const e=CHIPS[key];delete CHIPS[key];e.style.opacity=0;e.style.transform=(e.style.transform||'').replace(/scale\([^)]*\)/,'scale(.3)');setTimeout(()=>e.remove(),700)}}
 async function pairAnim(P,Q,a,b,r,mine){G.busy=true;G.turn=P===G.pl?'p':'q';G.ov={[a.u]:{x:mine?-5:-5,y:0,z:FL+13},[b.u]:{x:mine?9:9,y:0,z:FL+13}};G.sel=null;render();await sleep(900);
