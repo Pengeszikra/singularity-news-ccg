@@ -20,7 +20,7 @@ Each headline max 120 characters, no quotes inside, no markdown.`,
 Mr. Slop interviews one character from the card game. Write exactly 3 short question/answer pairs, format:
 Q: ...
 A: ...
-Questions are one line. Answers are 1-2 sentences, in the character's voice, showing how they feel about the coming singularity at the given stage (0 calm ... 4 it has happened; at stage 4 humans are Echoes). Max 110 words total. No markdown.`,
+Questions are one line. Answers are 1-2 sentences, in the character's voice, showing how they feel about the coming singularity at the given stage (0 calm ... 4 it has happened; at stage 4 humans are Echoes). Max 110 words total. No markdown. If the status says the character is permanently unemployed (laid off for good, replaced), the interview should be bitter, lost or quietly adapting, and mention the job loss.`,
   ending: `${WORLD}
 Write the closing report of a finished game as Mr. Slop (or the AGI voice if the singularity has arrived), 3-4 sentences, max 80 words, mentioning the outcome and at most two of the given cards. Win = bittersweet survival, loss = ominous. No markdown.`
 };
@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
     if (kind === 'interview') {
       const name = clean(b.name, 40), fam = FAM.includes(b.family) ? b.family : 'Civilian', v = Math.max(-30, Math.min(30, parseInt(b.value) || 0)), st = Math.max(0, Math.min(4, parseInt(b.stage) || 0));
       if (!name) return res.status(400).json({ error: 'name' }); used++;
-      const text = await llm(SYS.interview, `Character: ${name}. Group: ${fam}. Card value: ${v}. Singularity stage: ${st}.`);
+      const text = await llm(SYS.interview, `Character: ${name}. Group: ${fam}. Card value: ${v}. Singularity stage: ${st}.${b.unemployed === true ? ' Status: permanently unemployed.' : ''}`);
       return res.json({ text: text.replace(/\*+/g, '').slice(0, 1000) });
     }
     if (kind === 'ending') {
