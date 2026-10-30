@@ -273,7 +273,7 @@ const gcard=(c,o)=>`<div class="gc f${c.f}${o?'':' lk'}" data-i="${c.i}"><img sr
 $('cb').onclick=colOpen;$('cbm').onclick=colOpen;$('cx').onclick=()=>$('col').style.display='none';
 $('ctabs').onclick=e=>{const b=e.target.closest('button');if(b){CF=+b.dataset.k;colDraw()}};
 $('grid').onclick=e=>{const g=e.target.closest('.gc');if(!g)return;const c=CARDS[+g.dataset.i],o=OWN.includes(c.i);$('cdc').innerHTML=gcard(c,o);
- $('cdt').innerHTML=o?`<b>${c.n}</b><br>${FN[c.f]} · card value <b>${c.v}</b>${c.v==0?' (zero)':c.v<0?' (negative)':c.v%2?' (odd)':' (even)'}<br>Always the same number for this character.`:'Not collected yet.<br>Win city districts to find new cards.';$('cd').style.display='flex'};
+ $('cdt').innerHTML=o?`<b>${c.n}</b><br>${FN[c.f]} · card value <b>${c.v}</b>${c.v==0?' (zero)':c.v<0?' (negative)':c.v%2?' (odd)':' (even)'}`:'Not collected yet.<br>Win city districts to find new cards.';$('cd').style.display='flex'};
 $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
