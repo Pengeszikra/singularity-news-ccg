@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#05070d"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><title>Singularity New CCG</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#05070d"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><title>Singularity New CCG</title>
 <style>
 :root{--ac:#e0a84a;--bad:#ff3b2f;--cy:#35e0ff;--fg:#eadfc8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}html{font-size:min(1.5vw,2.5vh)}
+*{box-sizing:border-box}html{font-size:min(1.5vw,2.5vh);touch-action:manipulation;-webkit-text-size-adjust:100%}body{overscroll-behavior:none;-webkit-user-select:none;user-select:none}#ver{position:fixed;right:8px;bottom:3px;z-index:40;font:10px system-ui,sans-serif;color:#eadfc8;opacity:.45;pointer-events:none}
 body{margin:0;height:100vh;overflow:hidden;color:var(--fg);font:14px Georgia,serif;background:radial-gradient(circle at 72% 18%,#2b4375,#0b1226 55%,#03050c);transition:background 2s}
 body.post{background:radial-gradient(circle at 50% 25%,#6a0f0a,#1a0202 60%,#000)}
 body.post::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,#0000 0 2px,#0005 2px 3px)}
@@ -101,7 +101,7 @@ body.m4 .seat{display:block}body.m4 .half,body.m4 .sc{display:none}body:not(.m4)
 <h3>City map</h3><p>The game starts on the city map. Win a round to unlock the next district. Early districts use small decks, later ones bigger. The order is Q Q 4 Q 4 Q 4.</p><h3>42</h3><p>42 is the answer to everything. If anyone’s score lands on exactly <b>$42M</b>, they win the game instantly.</p><h3>Money chips</h3><p>Your money is shown as poker chips on the table: white = $1M, red = $5M, green = $25M, black plaque = $100M, purple plaque = $500M. They fly in when points are scored.</p><h3>Auto</h3><p>The Auto button lets the machine play your moves in both modes. Switch it off any time to take over.</p><h3>4 players mode</h3><ul><li>You and 3 bots, 4 cards each. The starter plays exactly <b>one</b> card to the center.</li><li>Going clockwise, each player must play a card that <b>pairs</b> with the card on top, and may then keep going: further cards are allowed as long as each pairs with the card just placed. Every pair adds its score to the <b>pot</b>.</li><li>If a pair contains an <b>unemployed</b> card, the order of play is <b>reversed</b> with 5% chance (10% if both cards are unemployed). The arrow next to the pot shows the direction.</li><li>The first player who cannot play ends the chain: the one who played last <b>takes the pot</b> and leads next. Hands refill to 4.</li><li>After the singularity you have 7 seconds, otherwise you pass. Everyone’s revenue is halved at the singularity.</li></ul><h3>Who is who</h3><ul><li>Before the singularity the opponent is a <b>Big Tech CEO</b>, after it an <b>AGI</b></li><li>Your points are <b>$M revenue</b>, the opponent’s are <b>$M of burned resources</b></li><li>If a pair contains an unemployed card, the turn passes to the opponent with <b>5%</b> chance (<b>10%</b> if both are unemployed)</li><li>The glowing frame shows whose half of the table is on turn</li></ul><h3>Singularity meter (0–12)</h3><ul><li>+1 every round</li><li>+1 for each Robot or Tech card in a pair</li><li>−1 for each Conspiracy card in a pair</li></ul>
 <h3>News and layoffs</h3><p>At 3, 6 and 9 the news turns scarier and a share of human cards becomes <b>unemployed</b> (value −2). Robots are safe.</p>
 <h3>The Singularity</h3><ul><li>Robots become <b>0</b> (wildcards)</li><li>Humans become Echoes: <b>sign flipped</b></li><li>All scores <b>×2</b></li><li>Your revenue is <b>halved</b>, the AGI’s burned resources are <b>doubled</b></li><li>You get only <b>7 seconds</b> to choose a pair, otherwise the opponent moves instead</li></ul></aside>
-<div id="rot"><div class="ph">📱</div>Rotate your phone to landscape</div>
+<div id="ver"></div><div id="rot"><div class="ph">📱</div>Rotate your phone to landscape</div>
 <div id="col"><h2><span id="ct">Collection</span><span><button id="crs">Reset all</button> <button id="cx">× Close</button></span></h2><div class="tabs" id="ctabs"></div><div id="grid"></div></div><div id="cd"><div id="cdc"></div><div id="cdt"></div><button id="cdx">Close</button></div><button id="cbm">Cards</button>
 <div id="rv"><h2 id="rvt"></h2><div id="rvc"></div><button id="rvx">OK</button></div><div id="end"><div id="et2"></div><div id="et3"></div><div class="eb"><button id="e1"></button><button id="e2"></button></div></div>
 <script>
@@ -181,7 +181,7 @@ const NODES=[{n:'Startup Alley',t:'q',pl:10,qu:12,x:14,y:66},{n:'Coffee Row',t:'
 try{DONE=JSON.parse(localStorage.getItem('sccg-done')||'[]')}catch(e){}
 const saveDone=()=>{try{localStorage.setItem('sccg-done',JSON.stringify(DONE))}catch(e){}};
 const unlocked=i=>i==0||!!DONE[i-1];
-function showMap(){$('cbm').style.display='block';if(G&&G.tm)disarm();$('end').style.display='none';$('map').style.display='block';
+function showMap(){if(RELOAD)return location.reload();$('cbm').style.display='block';if(G&&G.tm)disarm();$('end').style.display='none';$('map').style.display='block';
  const W=Math.max(117,Math.min(260,90*innerWidth/(innerHeight||1))),X=o=>+(14+(o.x-14)/122*(W-28)).toFixed(2);
  const sk=Array.from({length:Math.ceil(W/4.5)},(_,k)=>{const h=8+((k*53)%26);return `<rect x="${k*4.5+((k*37)%4)}" y="${90-h}" width="${3.4+(k%3)}" height="${h}" fill="#0c1730"/>`}).join('');
  const rd=NODES.slice(1).map((o,i)=>{const a=NODES[i];return `<line x1="${X(a)}" y1="${a.y}" x2="${X(o)}" y2="${o.y}" stroke="${DONE[i]?'#4cd37b':'#3b4a66'}" stroke-width="1.2" stroke-dasharray="${DONE[i]?'0':'2 1.6'}" stroke-linecap="round"/>`}).join('');
@@ -320,7 +320,15 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+const VER='26.10.31.001';$('ver').textContent='v'+VER;
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+let lastTap=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastTap<350)e.preventDefault();lastTap=n},{passive:false});
+let RELOAD=false;
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){const had=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had)return;if(!G||G.over||$('map').style.display!=='none')location.reload();else RELOAD=true});
+ addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(reg=>{const chk=()=>reg.update().catch(()=>{});setInterval(chk,15*60*1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})}).catch(()=>{}))}
 $('etb').onclick=()=>{if(G.wait&&G.more)G.wait(null)};$('nw').onclick=showMap;$('e1').onclick=()=>playNode(CUR);$('e2').onclick=showMap;$('map').onclick=e=>{const g=e.target.closest('.nd');if(g)playNode(+g.dataset.i);else if(e.target.closest('.rs')){resetAll()}};loadNews();showMap();addEventListener('resize',()=>{if($('map').style.display!=='none')showMap()});
 $('au').onclick=()=>{AUTO=!AUTO;$('au').classList.toggle('on',AUTO);$('au').textContent='Auto: '+(AUTO?'on':'off');if(G&&!G.over){if(AUTO&&G.mode==4&&G.wait&&G.opts)G.wait(aiPick(G.trick.length?G.trick[G.trick.length-1]:null,G.opts));render()}};
 </script></body></html>
