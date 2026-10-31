@@ -8,13 +8,19 @@ According these news a short action intensive card game to survive the singulari
 
 [0011](https://dev.to/pengeszikra/singularity-news-0011-1ai0)
 
+
+## Background – the world of Singularity News
+The game is set in the world of my satirical **Singularity News** series on DEV (issues 0001, 0010, 0011 above), anchored by the smug news anchor Mr. Slop. The same world also appears in [Slop Coding: The Vibe Archeologist Strikes Again](https://dev.to/pengeszikra/slop-coding-the-vibe-archeologist-strikes-again-35df).
+
+The pure-HTML, build-free approach and the Math Match rules come from my earlier card game, [flogon-galaxy](https://github.com/Pengeszikra/flogon-galaxy), which this project grew out of. Everything else – multiplayer tables, city map, singularity, groups, collection, interviews, the open-weight AI integration and the epilogue – was built during Hacktoberfest week 4 (from 26 October 2026).
+
 ## Play / PWA
 
 `index.html` is a single-file, installable PWA (manifest + service worker + icons), landscape fullscreen.
 Open it from any static host (GitHub Pages, Vercel) and use "Add to Home Screen".
 
-- City map: Q Q 4 Q 4 Q 4 districts, progress saved in `localStorage`
-- Quest mode (vs Big Tech CEO, AGI after the singularity) and 4 players mode
+- City map: 11 districts (Q Q 4 Q 4 Q 7 before the singularity, Q 4 Q 7 after it), progress saved in `localStorage`
+- Quest mode (vs Big Tech CEO, AGI after the singularity), 4-player and 7-player tables
 - Math Match rules from [flogon-galaxy](https://github.com/Pengeszikra/flogon-galaxy), singularity meter, news ticker, layoffs, 7 s turn timer after the singularity
 - 42 rule: exactly $42M wins instantly
 - Poker chip stacks show the money on the table, Auto button plays for you
