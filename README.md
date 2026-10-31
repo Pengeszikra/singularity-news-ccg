@@ -1,5 +1,9 @@
 # Singularity News CCG
 
+[![Singularity News CCG – intro video (click to play)](intro-poster.jpg)](intro.mp4)
+
+*Intro video: [intro.mp4](intro.mp4) · Play: [singularity-news-ccg.vercel.app](https://singularity-news-ccg.vercel.app/) · Article: [Singularity News :: CCG on DEV](https://dev.to/pengeszikra/singularity-news-ccg-5ejk)*
+
 According these news a short action intensive card game to survive the singularity.
 
 [0001](https://dev.to/pengeszikra/singularity-news-28p6)
@@ -10,7 +14,7 @@ According these news a short action intensive card game to survive the singulari
 
 
 ## Background – the world of Singularity News
-The game is set in the world of my satirical **Singularity News** series on DEV (issues 0001, 0010, 0011 above), anchored by the smug news anchor Mr. Slop. The same world also appears in [Slop Coding: The Vibe Archeologist Strikes Again](https://dev.to/pengeszikra/slop-coding-the-vibe-archeologist-strikes-again-35df).
+The game is set in the world of my satirical **Singularity News** series on DEV (issues 0001, 0010, 0011 above; the game itself is presented in [Singularity News :: CCG](https://dev.to/pengeszikra/singularity-news-ccg-5ejk)), anchored by the smug news anchor Mr. Slop. The same world also appears in [Slop Coding: The Vibe Archeologist Strikes Again](https://dev.to/pengeszikra/slop-coding-the-vibe-archeologist-strikes-again-35df).
 
 The pure-HTML, build-free approach and the Math Match rules come from my earlier card game, [flogon-galaxy](https://github.com/Pengeszikra/flogon-galaxy), which this project grew out of. Everything else – multiplayer tables, city map, singularity, groups, collection, interviews, the open-weight AI integration and the epilogue – was built during Hacktoberfest week 4 (from 26 October 2026).
 
