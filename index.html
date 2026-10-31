@@ -557,14 +557,19 @@ $('grid').onclick=e=>{const g=e.target.closest('.gc');if(!g)return;const c=CARDS
  $('cdt').innerHTML=o?`<b>${c.n}</b><br>${FN[c.f]} · card value <b>${c.v}</b>${c.v==0?' (zero)':c.v<0?' (negative)':c.v%2?' (odd)':' (even)'}${curG(c.i)?'<br><b>'+GW[curG(c.i)]+'</b> after the singularity':UNEMP.includes(c.i)?'<br><b style="color:#ff8a7a">Permanently unemployed</b>':''}<br><button id="cdi" data-i="${c.i}">Interview</button><div id="cdv"></div>`:'Not collected yet.<br>Win city districts to find new cards.';$('cd').style.display='flex'};
 const IFB=['Q: How are you holding up?\nA: Fine. Everything is fine. Please stop asking.\nQ: What do you make of the news?\nA: I do not read it anymore. It reads me.\nQ: Any plans?\nA: Keep my job. Keep my cool. Mostly the first one.','Q: How do you feel about the future?\nA: Mr. Slop, nobody told me there would be a quiz.\nQ: Will you be okay?\nA: Ask me after the next update.'];
 const IFU='Q: How is life after the layoff?\nA: Quiet. The badge stopped working on a Tuesday.\nQ: What do you do all day now?\nA: I refresh my inbox and watch the news. Mr. Slop keeps smiling.\nQ: Any message for the machines?\nA: Save me a seat. Please.';
-$('cdt').onclick=async e=>{const b=e.target.closest('#cdi');if(!b)return;const c=CARDS[+b.dataset.i],v=$('cdv');const g=curG(c.i),ue=!g&&UNEMP.includes(c.i),k='sccg-int-'+c.i+(g?'-g'+g:ue?'-u':'');let t=null;try{t=localStorage.getItem(k)}catch(x){}
- if(!t){v.textContent='Mr. Slop is calling…';b.disabled=true;const j=await ai('interview',{name:c.n,family:FN[c.f],value:c.v,stage:g?4:0,unemployed:ue,group:g?GW[g].toLowerCase():''});t=j&&j.text;if(t){try{localStorage.setItem(k,t)}catch(x){}}else t=(ue?IFU:IFB[c.f%2])+'\n(offline backup interview)';b.disabled=false}
- v.innerHTML=esc(t).split('\n').map(l=>/^Q:/.test(l)?'<p class="iq">'+l+'</p>':'<p>'+l+'</p>').join('')};
+$('cdt').onclick=async e=>{if(e.target.closest('#cdm'))return copyInt(e.target.closest('#cdm'));const b=e.target.closest('#cdi');if(!b)return;const c=CARDS[+b.dataset.i],v=$('cdv');const g=curG(c.i),ue=!g&&UNEMP.includes(c.i),k0='sccg-int-'+c.i+(g?'-g'+g:ue?'-u':''),k=k0+'@'+AIM;let t=null,md=null;try{t=localStorage.getItem(k);md=localStorage.getItem(k+'-m');if(!t&&AIM=='gpt-oss'){t=localStorage.getItem(k0);md=t&&'gpt-oss-120b'}}catch(x){}
+ if(!t){v.textContent='Mr. Slop is calling…';b.disabled=true;const j=await ai('interview',{name:c.n,family:FN[c.f],value:c.v,stage:g?4:0,unemployed:ue,group:g?GW[g].toLowerCase():''});t=j&&j.text;if(t){md=j.model||AIL[AIM];try{localStorage.setItem(k,t);localStorage.setItem(k+'-m',md)}catch(x){}}else{t=(ue?IFU:IFB[c.f%2]);md='offline backup (no AI)'}b.disabled=false}
+ INTV={c,t,md:md||AIL[AIM],g,ue};v.innerHTML=esc(t).split('\n').map(l=>/^Q:/.test(l)?'<p class="iq">'+l+'</p>':'<p>'+l+'</p>').join('')+'<p style="font-size:11px;opacity:.6">AI: '+esc(INTV.md)+'</p><button id="cdm" class="ghost" style="font-size:12px;padding:4px 10px">Copy as Markdown</button>'};
+let INTV=null;async function copyInt(btn){if(!INTV)return;const {c,t,md,g,ue}=INTV,st=g?GW[g]+' after the singularity':ue?'permanently unemployed':'employed';
+ const body=t.split('\n').filter(l=>l.trim()).map(l=>/^Q:/.test(l)?'**Mr. Slop:** '+l.replace(/^Q:\s*/,''):/^A:/.test(l)?'**'+c.n+':** '+l.replace(/^A:\s*/,''):l).join('\n\n');
+ const txt=`## Interview with ${c.n}\n\n*${FN[c.f]} · card value ${c.v} · ${st}*  \n*Singularity News · interviewed by Mr. Slop · AI: ${md}*\n\n${body}\n\n— from [Singularity News CCG](https://singularity-news-ccg.vercel.app/)\n`;
+ let ok=false;try{await navigator.clipboard.writeText(txt);ok=true}catch(x){try{const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();ok=document.execCommand('copy');ta.remove()}catch(y){}}
+ btn.textContent=ok?'Copied ✓':'Copy failed';setTimeout(()=>btn.textContent='Copy as Markdown',1600)}
 $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.10.31.025';$('ver').textContent='v'+VER;
+const VER='26.10.31.026';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
