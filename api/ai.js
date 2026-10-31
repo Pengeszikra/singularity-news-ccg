@@ -1,4 +1,4 @@
-// Singularity New CCG – tiny AI proxy (Vercel serverless function).
+// Singularity News CCG – tiny AI proxy (Vercel serverless function).
 // Two open-weight model providers: Gemma 4 via the Gemini API (primary) and openai/gpt-oss-120b via Groq (Responses API).
 // The client may ask for a model ('gemma' | 'gpt-oss'); if that provider fails, the other one takes over.
 // The API keys never reach the browser. Environment variables:
