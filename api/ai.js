@@ -1,11 +1,16 @@
 // Singularity New CCG – tiny AI proxy (Vercel serverless function).
-// Same provider setup as terminal-is-your-friend: Groq + openai/gpt-oss-120b (open-weight), Responses API.
-// The API key never reaches the browser. Environment variables:
+// Two open-weight model providers: Gemma 4 via the Gemini API (primary) and openai/gpt-oss-120b via Groq (Responses API).
+// The client may ask for a model ('gemma' | 'gpt-oss'); if that provider fails, the other one takes over.
+// The API keys never reach the browser. Environment variables:
+//   AI_PROVIDER    'gemma' (default) or 'gpt-oss'
+//   GEMINI_API_KEY Google AI Studio key for Gemma;  GEMMA_MODEL optional, default gemma-4-26b-a4b-it
 //   GROQ_API_KEY   (or AI_API_KEY)  server-side key
 //   AI_BASE_URL    optional, default https://api.groq.com/openai/v1
 //   AI_MODEL       optional, default openai/gpt-oss-120b
 // Optional limits: AI_DAILY_CAP (default 300 upstream calls/day), AI_PER_IP_HOUR (default 24), ALLOWED_ORIGIN
 const BASE = (process.env.AI_BASE_URL || 'https://api.groq.com/openai/v1').replace(/\/$/, ''), KEY = process.env.GROQ_API_KEY || process.env.AI_API_KEY, MODEL = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+const GKEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY, GMODEL = process.env.GEMMA_MODEL || 'gemma-4-26b-a4b-it', PROV = process.env.AI_PROVIDER === 'gpt-oss' ? 'gpt-oss' : 'gemma';
+const LABEL = { gemma: GMODEL.replace(/-it$/, ''), 'gpt-oss': MODEL.split('/').pop() };
 const CAP = +process.env.AI_DAILY_CAP || 300, PER_IP = +process.env.AI_PER_IP_HOUR || 24, ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const FAM = ['Conspiracy', 'Robot', 'Civilian', 'Worker', 'Showbiz', 'Tech', 'Halloween'];
 const hits = new Map(); let day = '', used = 0; const cache = {};
@@ -48,53 +53,74 @@ async function llm(system, user, maxTok) {
   return (j.output || []).filter(o => o.type === 'message').flatMap(o => o.content || []).filter(c => c.type === 'output_text').map(c => c.text).join('').trim();
 }
 
+async function gemma(system, user, maxTok) {
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:generateContent`, {
+    method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': GKEY },
+    // Gemma on the Gemini API has no separate system instruction, so the role text goes in front of the request.
+    body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: system + '\n\n---\n\n' + user }] }], generationConfig: { maxOutputTokens: maxTok || 1500, temperature: 0.9 } }),
+    signal: AbortSignal.timeout(maxTok ? 40000 : 25000)
+  });
+  if (!r.ok) throw new Error('gemma ' + r.status);
+  const j = await r.json(), parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+  const t = parts.filter(p => !p.thought).map(p => p.text || '').join('').trim();
+  if (!t) throw new Error('gemma empty'); return t;
+}
+const have = p => p === 'gemma' ? !!GKEY : !!KEY;
+// Ask the preferred provider first, fall back to the other one. ctx.model records who answered.
+async function gen(ctx, system, user, maxTok) {
+  const order = [ctx.want, ctx.want === 'gemma' ? 'gpt-oss' : 'gemma'].filter(have); let err;
+  for (const p of order) { try { const t = p === 'gemma' ? await gemma(system, user, maxTok) : await llm(system, user, maxTok); ctx.model = LABEL[p]; return t } catch (e) { err = e } }
+  throw err || new Error('no provider');
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', ORIGIN); res.setHeader('Access-Control-Allow-Headers', 'content-type'); res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
-  if (!KEY) return res.status(503).json({ error: 'AI not configured' });
+  if (!KEY && !GKEY) return res.status(503).json({ error: 'AI not configured' });
   let b = req.body; if (typeof b === 'string') { try { b = JSON.parse(b) } catch (e) { b = {} } } b = b || {};
+  const ctx = { want: b.model === 'gpt-oss' || b.model === 'gemma' ? b.model : PROV };
   const today = new Date().toISOString().slice(0, 10); if (day !== today) { day = today; used = 0; hits.clear(); }
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x', h = (hits.get(ip) || 0) + 1; hits.set(ip, h);
   if (h > PER_IP * 6) return res.status(429).json({ error: 'slow down' });
   const kind = b.kind;
   try {
     if (kind === 'news') {
-      const c = cache.news; if (c && Date.now() - c.t < 6 * 3600e3) return res.json({ items: c.items });
+      const c = cache['news:' + ctx.want]; if (c && Date.now() - c.t < 6 * 3600e3) return res.json({ items: c.items, model: c.model });
       if (used >= CAP) return res.status(429).json({ error: 'daily cap' }); used++;
-      let t = await llm(SYS.news, 'Write the headlines now.', 0); t = t.replace(/^```(?:json)?|```$/g, '').trim();
+      let t = await gen(ctx, SYS.news, 'Write the headlines now.', 0); t = t.replace(/^```(?:json)?|```$/g, '').trim();
       const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1));
       const items = [0, 1, 2, 3, 4].map(i => (Array.isArray(j['s' + i]) ? j['s' + i] : []).map(x => clean(x, 140)).filter(Boolean).slice(0, 4));
       if (items.some(a => !a.length)) return res.status(502).json({ error: 'bad output' });
-      cache.news = { t: Date.now(), items }; return res.json({ items });
+      cache['news:' + ctx.want] = { t: Date.now(), items, model: ctx.model }; return res.json({ items, model: ctx.model });
     }
     if (hits.get(ip) > PER_IP) return res.status(429).json({ error: 'rate limit' });
     if (used >= CAP) return res.status(429).json({ error: 'daily cap' });
     if (kind === 'interview') {
       const name = clean(b.name, 40), fam = FAM.includes(b.family) ? b.family : 'Civilian', v = Math.max(-30, Math.min(30, parseInt(b.value) || 0)), st = Math.max(0, Math.min(4, parseInt(b.stage) || 0));
       if (!name) return res.status(400).json({ error: 'name' }); used++;
-      const text = await llm(SYS.interview, `Character: ${name}. Group: ${fam}. Card value: ${v}. Singularity stage: ${st}.${b.unemployed === true ? ' Status: permanently unemployed.' : ''}${GRPD[b.group] ? ' Post-singularity group: ' + GRPD[b.group] : ''}`);
-      return res.json({ text: text.replace(/\*+/g, '').slice(0, 1000) });
+      const text = await gen(ctx, SYS.interview, `Character: ${name}. Group: ${fam}. Card value: ${v}. Singularity stage: ${st}.${b.unemployed === true ? ' Status: permanently unemployed.' : ''}${GRPD[b.group] ? ' Post-singularity group: ' + GRPD[b.group] : ''}`);
+      return res.json({ model: ctx.model, text: text.replace(/\*+/g, '').slice(0, 1000) });
     }
     if (kind === 'ending') {
       const names = Array.isArray(b.cards) ? b.cards.slice(0, 3).map(x => clean(x, 40)).filter(Boolean) : [], sc = Array.isArray(b.scores) ? b.scores.slice(0, 4).map(x => ({ n: clean(x.n, 12), s: parseInt(x.s) || 0 })) : [];
       used++;
-      const text = await llm(SYS.ending, `Outcome: ${b.win ? 'the player WON' : 'the player LOST'}. Singularity: ${b.post ? 'arrived' : 'not yet'}. Scores: ${sc.map(x => x.n + ' $' + x.s + 'M').join(', ')}. Notable cards: ${names.join(', ') || 'none'}.`);
-      return res.json({ text: text.replace(/\*+/g, '').slice(0, 700) });
+      const text = await gen(ctx, SYS.ending, `Outcome: ${b.win ? 'the player WON' : 'the player LOST'}. Singularity: ${b.post ? 'arrived' : 'not yet'}. Scores: ${sc.map(x => x.n + ' $' + x.s + 'M').join(', ')}. Notable cards: ${names.join(', ') || 'none'}.`);
+      return res.json({ model: ctx.model, text: text.replace(/\*+/g, '').slice(0, 700) });
     }
     if (kind === 'intro') {
       const name = clean(b.name, 40), fam = FAM.includes(b.family) ? b.family : 'Civilian';
       if (!name) return res.status(400).json({ error: 'name' }); used++;
-      const text = await llm(SYS.intro, `Character: ${name}. Family: ${fam}.`);
-      return res.json({ text: text.replace(/\*+/g, '').slice(0, 700) });
+      const text = await gen(ctx, SYS.intro, `Character: ${name}. Family: ${fam}.`);
+      return res.json({ model: ctx.model, text: text.replace(/\*+/g, '').slice(0, 700) });
     }
     if (kind === 'story') {
       const cast = (Array.isArray(b.cast) ? b.cast : []).slice(0, 7).map(x => ({ r: clean(x.role, 2), n: clean(x.n, 40), f: FAM.includes(x.fam) || x.fam === 'Anchor' ? x.fam : 'Civilian', g: ['rebel', 'survivor', 'zombie', 'robot'].includes(x.g) ? x.g.toUpperCase() : 'SURVIVOR', un: x.un === true, i: clean(x.int, 300) })).filter(x => x.n);
       const beats = (Array.isArray(b.beats) ? b.beats : []).slice(0, 5).map(x => clean(x, 320)).filter(Boolean), head = clean(b.head, 140), paper = clean(b.paper, 40);
       if (!cast.length || !beats.length || !head) return res.status(400).json({ error: 'story input' }); used++;
       const user = `Outcome: the player ${b.win ? 'WON' : 'LOST'}. Newspaper: ${paper}.\nHeadline skeleton: ${head}\nBeats:\n${beats.map((x, k) => (k + 1) + '. ' + x).join('\n')}\nCast:\n${cast.map(x => `- ${x.r === 'L' ? (b.boss === true ? 'NEW LEADER, THE NARRATOR\'S BOSS ' : 'NEW LEADER ') : ''}${x.n} | family ${x.f} | group ${x.g} | permanently unemployed before the singularity: ${x.un ? 'yes' : 'no'} | interview: ${x.i || 'none'}`).join('\n')}`;
-      const text = await llm(SYS.story, user, 4000);
-      return res.json({ text: text.replace(/\*+/g, '').slice(0, 4500) });
+      const text = await gen(ctx, SYS.story, user, 4000);
+      return res.json({ model: ctx.model, text: text.replace(/\*+/g, '').slice(0, 4500) });
     }
     return res.status(400).json({ error: 'unknown kind' });
   } catch (e) { return res.status(502).json({ error: 'upstream failed' }); }

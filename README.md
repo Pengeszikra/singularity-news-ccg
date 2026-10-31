@@ -51,3 +51,8 @@ The 7th and the final district are 7-player elimination rounds. Everyone starts 
 
 ## Intro
 First launch: a title screen (newsroom poker illustration) with an optional intro video (`intro.mp4`, loaded only when requested), then the top card of a deck flips and introduces the game in its own voice (AI `intro` kind, with built-in texts per family as fallback). An optional pairing demo animates the four pairing rules; it can be reopened from the Rules panel, and the whole intro from the map's Intro button.
+
+## AI models (Gemma 4 primary)
+`api/ai.js` talks to two open-weight models: **Gemma 4** (`gemma-4-26b-a4b-it`) through the Gemini API, and **gpt-oss-120b** through Groq. Gemma is the default; the **AI** button on the city map switches models in the game, and if the chosen provider fails the other one answers. The article, the intro card and the news show which model wrote them.
+
+Vercel environment variables: `GEMINI_API_KEY` (Google AI Studio), `AI_PROVIDER=gemma`, `GROQ_API_KEY`; optional `GEMMA_MODEL`, `AI_MODEL`.
