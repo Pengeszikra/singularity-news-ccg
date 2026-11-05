@@ -66,3 +66,6 @@ First launch: a title screen (newsroom poker illustration) with an optional intr
 `api/ai.js` talks to two open-weight models: **Gemma 4** (`gemma-4-26b-a4b-it`) through the Gemini API, and **gpt-oss-120b** through Groq. Gemma is the default; the **AI** button on the city map switches models in the game, and if the chosen provider fails the other one answers. The article, the intro card and the news show which model wrote them.
 
 Vercel environment variables: `GEMINI_API_KEY` (Google AI Studio), `AI_PROVIDER=gemma`, `GROQ_API_KEY`; optional `GEMMA_MODEL`, `AI_MODEL`.
+
+## Growing the collection
+Besides winning districts, the collection grows in two hidden ways: in the last district two zombies paired together trigger a **zombie invasion** – a not-yet-collected human joins your collection as a zombie and enters play on the spot (even if you lose that game) – and fresh interviews sometimes bring in a new card (100% at first, then 10% less each time, down to 10%).
