@@ -145,7 +145,7 @@ body.m7 .seat{display:none!important}body.m7 #sb{font-size:.8rem;top:7vh}#sb .r.
 <h3>City map</h3><ul><li>11 districts: <b>Q Q 4 Q 4 Q 7</b> before the singularity, <b>Q 4 Q 7</b> after it (red zone). Q = quest duel, 4 / 7 = table for 4 or 7 players.</li><li>Win a district to unlock the next one and add new characters (3 in a quest, 4 at a table) to your collection.</li><li>After every game an unemployed collected card may be laid off <b>permanently</b> (2 × district number %). Permanently unemployed characters start every pre-singularity game unemployed (−2).</li><li>Open <b>Cards</b> to browse your collection and let Mr. Slop interview any character – their answers depend on their job, layoffs and post-singularity group.</li><li>The last district ends the story with an article written from your characters.</li></ul>
 <h3>Quest duel</h3><p>Click one of your cards (near side), then one of the opponent’s cards (far side). Keep pairing until nothing fits, then draw up to 4; the opponent draws 2. When it holds 4 cards it takes <b>revenge</b>: it pairs against your hand and scores the absolute sum of what is left. When its deck is empty, the higher number wins. The opponent is a <b>Big Tech CEO</b> (burned resources) before the singularity and an <b>AGI</b> after it.</p>
 <h3>Table for 4</h3><ul><li>4 cards each. The starter plays exactly one card; going round, each player must play a card that pairs with the card on top and may continue as long as every card pairs with the one just placed. Every pair adds to the <b>pot</b>.</li><li>The first player who cannot play ends the chain: the one who played last takes the pot and leads next.</li><li>An unemployed card in a pair reverses the order of play with 5% chance (10% with two).</li></ul>
-<h3>Table for 7 (Bunker Market, Last Newsroom)</h3><ul><li>Everyone starts with <b>$144M</b> and the name <b>---</b>, then gets a face-up <b>boss card</b>: its name becomes yours.</li><li>When the turn moves on from you, you pay as much as the burn pile grew during your turn. The AGI burns the pile.</li><li>If you cannot (or do not) pair with the calling card, you pay <b>7×</b> its value (at least $7M).</li><li>You may play your boss card, but it costs half your money and you get a new boss.</li><li>Out of chips = out of the game; your boss stays at your seat, inverted. The deck is reshuffled when it runs out. Last one standing wins. Your boss at the end of the Last Newsroom becomes your boss in the final story.</li></ul>
+<h3>Table for 7 (Bunker Market, Last Newsroom)</h3><ul><li>Everyone starts with <b>$144M</b> and the name <b>---</b>, then gets a face-up <b>boss card</b>: its name becomes yours.</li><li>When the turn moves on from you, you pay as much as the burn pile grew during your turn. The AGI burns the pile.</li><li>If you cannot (or do not) pair with the calling card, you pay <b>7×</b> its value (at least $7M).</li><li>Combos are optional: after your first card you may end your turn at any time. If your hand runs empty, you are skipped without penalty until the next deal.</li><li>You may play your boss card, but it costs half your money and you get a new boss.</li><li>Out of chips = out of the game; your boss stays at your seat, inverted. The deck is reshuffled when it runs out. Last one standing wins. Your boss at the end of the Last Newsroom becomes your boss in the final story.</li></ul>
 <h3>Singularity meter (0–12)</h3><ul><li>+1 every round, +1 for each Robot or Tech card in a pair, −1 for each Conspiracy card.</li><li>At 3, 6 and 9 the news gets scarier and layoffs hit: a share of the human cards becomes <b>unemployed</b> (value −2). Robots are safe.</li></ul>
 <h3>The Singularity</h3><ul><li>All cards are shuffled back into the deck and dealt again.</li><li>Robots ascend to <b>0</b>; humans become Echoes with their <b>sign flipped</b>. Unemployment ends.</li><li>Every human becomes a <b>rebel</b>, a <b>survivor</b> (value 3 better: +3 / −3) or a <b>zombie</b> (value 1 worse, fully under AI control).</li><li>Pairing rules stay, but pairs convert: a zombie on a rebel makes a zombie, a rebel on a survivor recruits a rebel, a rebel on a robot reprograms it to a random value.</li><li>All scores <b>×2</b>; quest and 4-player revenue is halved once; you get <b>7 seconds</b> per move.</li></ul>
 <h3>42</h3><p>42 is the answer to everything: landing on exactly <b>$42M</b> wins instantly (not at the 7-player tables).</p>
@@ -467,18 +467,22 @@ function fin7(w){G.over=true;disarm();const a=G.players.filter(q=>!q.out);$('et2
 function draw1(){if(!G.deck.length&&G.drop.length)G.deck=shuf(G.drop.splice(0));return G.deck.pop()}
 async function play4(){const P=G.players;
  if(G.seven&&!G.bd){G.bd=1;G.dealing=true;for(const p of P){if(!p.out&&!p.bz.length){const c=draw1();if(c){p.bz.push(c);p.name=CARDS[c.i].n}}render();await sleep(260)}G.dealing=false;log('Everyone gets a face-up boss card – it gives them their name.');render();await sleep(1200)}
- R:for(;;){G.trick=[];G.pot=0;let cur=G.leader,last=cur,first=true;
-  for(;;){const p=P[cur],g0=G.pot;G.turn=cur;G.sel=null;let n=0;
+ R:for(;;){G.trick=[];G.pot=0;let cur=G.leader,last=cur,first=true,skip=0;
+  for(;;){const p=P[cur],g0=G.pot;
+   if(G.seven&&!first&&cur==last)break;
+   if(G.seven&&!first&&!p.hand.length){if(++skip>=P.filter(q=>!q.out).length)break;G.turn=cur;log(p.name+' has no cards left – the turn passes on (no penalty).');render();await sleep(700);cur=nx7(cur);continue}
+   skip=0;G.turn=cur;G.sel=null;let n=0;
    for(;;){const C=G.seven?[...p.hand,...p.bz]:p.hand,opts=first?C:C.filter(c=>match(G.trick[G.trick.length-1],c));
     if(!opts.length){if(!n){if(G.seven&&!first&&await charge(cur,7*Math.max(1,Math.abs(G.trick[G.trick.length-1].v)),'cannot pair with the calling card'))return;log(G.seven?`${p.name} cannot play – the pile burns`:`${p.name} cannot play – ${P[last].name} takes the pot`);G.busy=true;render();await sleep(1200)}break}
-    const t=G.trick[G.trick.length-1];let c;
+    const t=G.trick[G.trick.length-1],risky=o=>G.seven&&n>0&&o.length>0&&G.pot-g0+Math.min(...o.map(x=>match(t,x).s))>=p.score*.5;let c;
     if(cur==0){G.busy=false;G.opts=opts;G.more=n>0||(G.seven&&!first);const pr=new Promise(res=>G.wait=res);
      log(first?'Your lead: play any card (just one).':n?'Play another pairing card, or end your turn.':G.seven?'Pair with the calling card (you pay what the burn pile grows) – passing costs 7× its value.':'Play a card that pairs with the center card.');render();
-     if(AUTO)setTimeout(()=>G.wait&&G.wait(n&&Math.random()<.4?null:aiPick(first?null:t,opts)),900);
+     if(AUTO)setTimeout(()=>G.wait&&G.wait(n&&(Math.random()<.4||risky(opts))?null:aiPick(first?null:t,opts)),900);
      c=await pr;G.wait=null;G.opts=null;G.more=false;G.busy=true;if(!c&&first)c=opts[0];
      if(!c){if(G.seven&&!n&&!first&&await charge(0,7*Math.max(1,Math.abs(t.v)),'passes on the calling card'))return;log(n?'You end your turn.':G.seven?'You pass.':'Time is up – you pass!');render();await sleep(800);break}}
     else{G.busy=true;render();await sleep(900);if(n&&Math.random()<.4)break;let o=opts;
-     if(G.seven){const h=opts.filter(x=>!p.bz.includes(x));if(h.length)o=h;else if(!first&&Math.ceil(p.score/2)>7*Math.max(1,Math.abs(t.v))){if(!n&&await charge(cur,7*Math.max(1,Math.abs(t.v)),'keeps the boss card and cannot pair'))return;break}}
+     if(G.seven){const h=opts.filter(x=>!p.bz.includes(x));if(h.length)o=h;else if(!first&&Math.ceil(p.score/2)>7*Math.max(1,Math.abs(t.v))){if(!n&&await charge(cur,7*Math.max(1,Math.abs(t.v)),'keeps the boss card and cannot pair'))return;break}
+      if(risky(o)){log(p.name+' ends the combo to save money.');await sleep(500);break}}
      c=aiPick(first?null:t,o)}
     await place(p,c,first?null:t);if(G.over)return;if(G.rg){G.rg=0;continue R}last=cur;n++;
     if(first){first=false;break}}
@@ -569,7 +573,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.10.31.026';$('ver').textContent='v'+VER;
+const VER='26.11.05.001';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
