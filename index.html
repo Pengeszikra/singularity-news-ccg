@@ -477,7 +477,7 @@ async function play4(){const P=G.players;
     const t=G.trick[G.trick.length-1],risky=o=>G.seven&&n>0&&o.length>0&&G.pot-g0+Math.min(...o.map(x=>match(t,x).s))>=p.score*.5;let c;
     if(cur==0){G.busy=false;G.opts=opts;G.more=n>0||(G.seven&&!first);const pr=new Promise(res=>G.wait=res);
      log(first?'Your lead: play any card (just one).':n?'Play another pairing card, or end your turn.':G.seven?'Pair with the calling card (you pay what the burn pile grows) – passing costs 7× its value.':'Play a card that pairs with the center card.');render();
-     if(AUTO)setTimeout(()=>G.wait&&G.wait(n&&(Math.random()<.4||risky(opts))?null:aiPick(first?null:t,opts)),900);
+     if(AUTO)setTimeout(()=>{if(!G.wait)return;let o=opts;if(G.seven){const h=opts.filter(x=>!p.bz.includes(x));if(h.length)o=h;else if(!first&&Math.ceil(p.score/2)>7*Math.max(1,Math.abs(t.v)))o=[]}G.wait(!o.length||n&&(Math.random()<.4||risky(o))?null:aiPick(first?null:t,o))},900);
      c=await pr;G.wait=null;G.opts=null;G.more=false;G.busy=true;if(!c&&first)c=opts[0];
      if(!c){if(G.seven&&!n&&!first&&await charge(0,7*Math.max(1,Math.abs(t.v)),'passes on the calling card'))return;log(n?'You end your turn.':G.seven?'You pass.':'Time is up – you pass!');render();await sleep(800);break}}
     else{G.busy=true;render();await sleep(900);if(n&&Math.random()<.4)break;let o=opts;
@@ -573,7 +573,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.11.05.001';$('ver').textContent='v'+VER;
+const VER='26.11.05.002';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
