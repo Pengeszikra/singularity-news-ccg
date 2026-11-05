@@ -216,7 +216,7 @@ const saveGrp=()=>{try{localStorage.setItem('sccg-grp',JSON.stringify(GRP))}catc
 function roll(i){const w=UNEMP.includes(i)?[.55,.3]:[.25,.35],r=Math.random();return r<w[0]?'r':r<w[0]+w[1]?'s':'z'}
 function grp(i){if(!GRP[i]){GRP[i]=roll(i);saveGrp()}return GRP[i]}
 const gadj=(v,g)=>g=='s'?(v<0?v-3:v+3):g=='z'?(v>0?v-1:v<0?v+1:0):v;
-function setG(c,g){c.g=g;c.v=gadj(c.pv,g);GRP[c.i]=g}
+function setG(c,g){c.g=g;c.v=gadj(c.pv,g);GRP[c.i]=g;c.n=(g=='z'?'':'Echo of ')+CARDS[c.i].n}
 function meter(){const m=$('mi');if(m.children.length!=SING)m.innerHTML=Array.from({length:SING},(_,k)=>`<b style="--h:${Math.round(48-k*4.4)}"></b>`).join('');
  [...m.children].forEach((b,k)=>b.classList.toggle('on',G.post||k<G.sing));$('ml').innerHTML=G.post?'<em>The Singularity</em><small>nothing is what it was</small>':`<em>Singularity</em> ${G.sing}<small>/ ${SING} · round ${G.round}</small>`;m.parentNode.classList.toggle('pst',!!G.post)}
 function convert(p,t){if(!p.g||!t.post)return;const e=EL[t.u];
@@ -594,7 +594,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.11.05.012';$('ver').textContent='v'+VER;
+const VER='26.11.05.013';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
