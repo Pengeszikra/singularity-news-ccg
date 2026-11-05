@@ -55,7 +55,7 @@ body.m4 .seat{display:block}body.m4 .half,body.m4 .sc{display:none}body:not(.m4)
 .chip{position:absolute;left:-1rem;top:-1rem;width:2rem;height:2rem;border-radius:50%;pointer-events:none;transition:transform .8s cubic-bezier(.3,1.15,.5,1),opacity .5s;background:radial-gradient(circle,var(--c) 0 46%,#fff9 47% 52%,transparent 53%),repeating-conic-gradient(#fff 0 18deg,var(--c) 18deg 36deg);box-shadow:0 0 0 .12rem var(--d),0 .15rem .3rem #000a}
 .chip.pl{left:-1.3rem;top:-.9rem;width:2.6rem;height:1.8rem;border-radius:.4rem;background:var(--c);box-shadow:inset 0 0 0 .15rem var(--c),inset 0 0 0 .25rem #f1e2a8,0 0 0 .12rem var(--d),0 .15rem .3rem #000a}
 .fd .ci{border-color:#5b4320!important;box-shadow:0 .2rem .6rem #000!important}
-#map{position:fixed;inset:0;z-index:15;background:#15171c;overflow:hidden}#map::before{content:'';position:absolute;inset:-60px;background:url(citymap.jpg) center/cover;filter:blur(24px) brightness(.45)}#map svg{position:relative}#map svg{width:100%;height:100%;display:block}.eb{display:flex;gap:10px}
+#map{position:fixed;inset:0;z-index:15;background:#000;overflow:hidden}#map svg{width:100%;height:100%;display:block}.eb{display:flex;gap:10px}
 #eb4{display:none;bottom:54px;left:50%;transform:translateX(-50%)}
 #sban{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(#000c,#0000 78%);z-index:9;color:var(--bad);font:bold 7.2vw/1 Georgia,serif;letter-spacing:.06em;text-align:center;animation:sbn 3s forwards;pointer-events:none;text-shadow:0 0 2rem #f00}
 #sban small{font-size:2.4vw;color:var(--fg);letter-spacing:.05em;margin-top:2vw;text-shadow:none}@keyframes sbn{0%{opacity:0;transform:scale(3)}10%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
@@ -591,7 +591,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.11.05.007';$('ver').textContent='v'+VER;
+const VER='26.11.05.008';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
