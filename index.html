@@ -348,7 +348,7 @@ async function invasion(top){const pool=CARDS.filter(k=>k.f!=1&&!OWN.includes(k.
  document.body.classList.remove('fxs');render();return true}
 async function place(p,c,top){G.busy=true;const bu=!!(p.bz&&p.bz[0]===c);if(bu)p.bz.length=0;else pull(p.hand,c);G.trick.push(c);render();await sleep(550);
  if(bu){if(await charge(G.players.indexOf(p),Math.ceil(p.score/2),'sacrificed the boss card'))return;if(!p.out){const nb=draw1();if(nb){p.bz.push(nb);p.name=CARDS[nb.i].n;log('New boss: '+p.name);render();await sleep(800)}}}
- if(top){const r=match(top,c),zz=top.g=='z'&&c.g=='z';convert(c,top);G.pot+=r.s;log(`${p.name}: ${top.n} (${top.v}) + ${c.n} (${c.v}) = +$${r.s}M`);await showCalc(p.name+' · '+r.k,fx(top,c,r),r.s,p===G.players[0],'pot');if(zz&&CUR==NODES.length-1&&!G.over&&Math.random()<.21&&await invasion(c))G.inv=1;bump(c.f==0?-1:(c.f==1||c.f==5)?1:0);render();chk42();if(G.asc&&!G.over){await afterBump();G.rg=1;return}
+ if(top){const r=match(top,c),zz=top.g=='z'&&c.g=='z';convert(c,top);G.pot+=r.s;log(`${p.name}: ${top.n} (${top.v}) + ${c.n} (${c.v}) = +$${r.s}M`);await showCalc(p.name+' · '+r.k,fx(top,c,r),r.s,p===G.players[0],'pot');if(zz&&CUR==NODES.length-1&&!G.over&&Math.random()<.35&&await invasion(c))G.inv=1;bump(c.f==0?-1:(c.f==1||c.f==5)?1:0);render();chk42();if(G.asc&&!G.over){await afterBump();G.rg=1;return}
   const un=(top.un?1:0)+(c.un?1:0);if(un&&!G.over&&Math.random()<un*.05){G.dir*=-1;log('An unemployed card in the pair – the order of play is REVERSED '+(G.dir<0?'↺':'↻')+'!');render();await sleep(1300)}}
  else{log(p.name+' leads with '+c.n);await sleep(400)}}
 async function settle(w){const P=G.players,p=P[w];G.busy=true;G.turn=w;
@@ -456,7 +456,7 @@ const SCL=[
 
 function intv(i){try{return(localStorage.getItem('sccg-int-'+i+'-g'+GRP[i])||localStorage.getItem('sccg-int-'+i+(UNEMP.includes(i)?'-u':''))||localStorage.getItem('sccg-int-'+i)||'').replace(/\s+/g,' ').slice(0,300)}catch(e){return''}}
 const gtag=c=>c.f==1?['n','ROBOT']:[grp(c.i),GW[grp(c.i)]];
-function zReport(zs,next){const d=document.createElement('div');d.id='zr';const n=zs.length;
+function zReport(zs,next){if(!zs.length)return next();const d=document.createElement('div');d.id='zr';const n=zs.length;
  d.innerHTML=`<h2>Zombie invasion report</h2><p>${n?`<b>${n}</b> new zombie${n>1?'s':''} joined the community – and your collection.`:'No zombie invasion this time. The community stayed as it was.'}</p><div class="zg">${zs.map((i,k)=>`<div style="animation-delay:${.25+k*.18}s">${gcard(CARDS[i],true)}</div>`).join('')}</div><button>Continue ›</button>`;
  document.body.appendChild(d);d.querySelector('button').onclick=()=>{d.remove();next()}}
 function openEnding(w,boss){ENDW=w;ENDG=true;ENDB=boss!=null;if(ENDB){$('end').style.display='none';$('map').style.display='none';$('cbm').style.display='none';$('ibm').style.display='none';$('mbm').style.display='none';writeStory(boss);return}$('end').style.display='none';$('map').style.display='none';$('cbm').style.display='none';$('ibm').style.display='none';$('mbm').style.display='none';
@@ -594,7 +594,7 @@ $('cdx').onclick=()=>$('cd').style.display='none';
 $('rl').onclick=()=>$('rules').classList.toggle('open');$('rx').onclick=()=>$('rules').classList.remove('open');
 addEventListener('keydown',e=>{if(e.key=='Escape')$('rules').classList.remove('open')});
 document.addEventListener('pointerdown',()=>{if(matchMedia('(pointer:coarse)').matches)goFull()},{once:true});
-const VER='26.11.05.011';$('ver').textContent='v'+VER;
+const VER='26.11.05.012';$('ver').textContent='v'+VER;
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
